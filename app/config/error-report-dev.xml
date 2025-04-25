@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE aspectran PUBLIC "-//ASPECTRAN//DTD Aspectran 8.0//EN"
+        "https://aspectran.com/dtd/aspectran-8.dtd">
+<aspectran>
+
+    <aspect id="errorReport">
+        <description>
+            Prints a simple error message to the console if an unexpected error occurs during processing of the translet.
+            Outputs an error page that matches the type of content being rendered.
+        </description>
+        <exception>
+            <thrown>
+                <transform format="text">
+                    <template style="apon">
+                        |
+                        |An Error Occurred!
+                        |-----------------------------------------------------------------------------------------
+                        |#{currentTranslet^rootCauseOfRaisedException}
+                        |-----------------------------------------------------------------------------------------
+                        |#{class:com.aspectran.core.AboutMe^poweredBy}
+                        |
+                    </template>
+                </transform>
+                <transform format="text" contentType="text/html" default="true">
+                    <template style="apon">
+                        <![CDATA[
+                        |<html>
+                        |<body style="color:#eee;background-color:#000;">
+                        |<h1 style="color:red;">An Error Occurred!</h1>
+                        |<hr/>
+                        |<pre>#{currentTranslet^rootCauseOfRaisedException}</pre>
+                        |<hr/>
+                        |<p align="right">#{class:com.aspectran.core.AboutMe^poweredByLink}</p>
+                        |</body>
+                        |</html>
+                        ]]>
+                    </template>
+                </transform>
+            </thrown>
+        </exception>
+    </aspect>
+
+</aspectran>
