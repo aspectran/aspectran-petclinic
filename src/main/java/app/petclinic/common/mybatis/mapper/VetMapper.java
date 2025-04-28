@@ -19,8 +19,8 @@ import app.petclinic.common.pagination.PageInfo;
 import app.petclinic.vet.Vet;
 import com.aspectran.core.component.bean.annotation.Autowired;
 import com.aspectran.core.component.bean.annotation.Component;
-import com.aspectran.mybatis.SqlMapperAgent;
-import com.aspectran.mybatis.SqlMapperDao;
+import com.aspectran.mybatis.SqlMapperAccess;
+import com.aspectran.mybatis.SqlMapperProvider;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -39,11 +39,11 @@ public interface VetMapper {
     List<Vet> getVetList(@Param("page") PageInfo pageInfo);
 
     @Component
-    class Dao extends SqlMapperDao<VetMapper> implements VetMapper {
+    class Dao extends SqlMapperAccess<VetMapper> implements VetMapper {
 
         @Autowired
-        public Dao(SqlMapperAgent mapperAgent) {
-            super(mapperAgent, VetMapper.class);
+        public Dao(SqlMapperProvider sqlMapperProvider) {
+            super(sqlMapperProvider, VetMapper.class);
         }
 
         @Override

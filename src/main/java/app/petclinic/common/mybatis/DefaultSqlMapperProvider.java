@@ -23,7 +23,7 @@ import org.apache.ibatis.session.SqlSession;
 
 @Component
 @Bean(lazyDestroy = true)
-public final class DefaultSqlMapperAgent implements SqlMapperProvider {
+public final class DefaultSqlMapperProvider implements SqlMapperProvider {
 
     private final SqlSession simpleSqlSession;
 
@@ -32,9 +32,9 @@ public final class DefaultSqlMapperAgent implements SqlMapperProvider {
     private final SqlSession reuseSqlSession;
 
     @Autowired
-    public DefaultSqlMapperAgent(SimpleSqlSession simpleSqlSession,
-                                 BatchSqlSession batchSqlSession,
-                                 ReuseSqlSession reuseSqlSession) {
+    public DefaultSqlMapperProvider(SimpleSqlSession simpleSqlSession,
+                                    BatchSqlSession batchSqlSession,
+                                    ReuseSqlSession reuseSqlSession) {
         this.simpleSqlSession = simpleSqlSession;
         this.batchSqlSession = batchSqlSession;
         this.reuseSqlSession = reuseSqlSession;

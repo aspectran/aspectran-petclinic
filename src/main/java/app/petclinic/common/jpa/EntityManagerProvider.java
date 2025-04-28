@@ -3,6 +3,7 @@ package app.petclinic.common.jpa;
 import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.InstantActivitySupport;
 import com.aspectran.core.component.bean.NoSuchBeanException;
+import com.aspectran.core.component.bean.ablility.InitializableBean;
 import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
@@ -22,7 +23,7 @@ import jakarta.persistence.EntityManagerFactory;
 /**
  * <p>Created: 2025-04-24</p>
  */
-public abstract class EntityManagerProvider extends InstantActivitySupport {
+public abstract class EntityManagerProvider extends InstantActivitySupport implements InitializableBean {
 
     private final String relevantAspectId;
 
@@ -59,18 +60,18 @@ public abstract class EntityManagerProvider extends InstantActivitySupport {
     @NonNull
     protected EntityManagerAdvice getEntityManagerAdvice() {
         checkTransactional();
-        EntityManagerAdvice txAdvice = getAvailableActivity().getAspectAdviceBean(relevantAspectId);
-        if (txAdvice == null) {
-            txAdvice = getAvailableActivity().getBeforeAdviceResult(relevantAspectId);
+        EntityManagerAdvice entityManagerAdvice = getAvailableActivity().getAspectAdviceBean(relevantAspectId);
+        if (entityManagerAdvice == null) {
+            entityManagerAdvice = getAvailableActivity().getBeforeAdviceResult(relevantAspectId);
         }
-        if (txAdvice == null) {
+        if (entityManagerAdvice == null) {
             if (getActivityContext().getAspectRuleRegistry().getAspectRule(relevantAspectId) == null) {
                 throw new IllegalArgumentException("Aspect '" + relevantAspectId +
                         "' handling EntityManagerAdvice is not registered");
             }
             throw new IllegalStateException("EntityManagerAdvice not found handled by aspect '" + relevantAspectId + "'");
         }
-        return txAdvice;
+        return entityManagerAdvice;
     }
 
     @AvoidAdvice
@@ -82,8 +83,16 @@ public abstract class EntityManagerProvider extends InstantActivitySupport {
     }
 
     @AvoidAdvice
-    protected void registerEntityManagerAdvice() {
-        if (getActivityContext().getAspectRuleRegistry().getAspectRule(relevantAspectId) != null) {
+    @Override
+    public void initialize() {
+        if (!getActivityContext().getAspectRuleRegistry().contains(relevantAspectId)) {
+            registerSqlSessionAdvice();
+        }
+    }
+
+    @AvoidAdvice
+    protected void registerSqlSessionAdvice() {
+        if (getActivityContext().getAspectRuleRegistry().contains(relevantAspectId)) {
             throw new IllegalStateException("EntityManagerAdvice is already registered");
         }
 
