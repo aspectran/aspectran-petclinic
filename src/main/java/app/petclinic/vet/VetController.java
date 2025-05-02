@@ -15,7 +15,6 @@
  */
 package app.petclinic.vet;
 
-import app.petclinic.common.mybatis.mapper.VetMapper;
 import app.petclinic.common.pagination.PageInfo;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.component.bean.annotation.Autowired;
@@ -35,10 +34,10 @@ import java.util.List;
 @Component
 public class VetController {
 
-	private final VetMapper.Dao dao;
+	private final VetDao dao;
 
 	@Autowired
-    public VetController(VetMapper.Dao dao) {
+    public VetController(VetDao dao) {
 		this.dao = dao;
 	}
 
@@ -46,10 +45,6 @@ public class VetController {
     @Dispatch("vets/vetList")
 	public void vetList(@NonNull Translet translet) {
         PageInfo pageInfo = PageInfo.of(translet);
-
-        int total = dao.getVetTotal();
-        pageInfo.setTotalRecords(total);
-
         List<Vet> listVets = dao.getVetList(pageInfo);
 
         translet.setAttribute("listVets", listVets);

@@ -55,6 +55,7 @@
 
         <aspectran.version>8.4.4-SNAPSHOT</aspectran.version>
         <webjars-bootstrap.version>5.3.3</webjars-bootstrap.version>
+        <querydsl.version>5.1.0</querydsl.version>
     </properties>
 
     <repositories>
@@ -132,9 +133,22 @@
         </dependency>
 
         <dependency>
-            <groupId>org.hibernate</groupId>
-            <artifactId>hibernate-entitymanager</artifactId>
-            <version>5.6.15.Final</version>
+            <groupId>org.hibernate.orm</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>6.6.13.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>com.querydsl</groupId>
+            <artifactId>querydsl-jpa</artifactId>
+            <version>${querydsl.version}</version>
+            <classifier>jakarta</classifier>
+        </dependency>
+        <dependency>
+            <groupId>com.querydsl</groupId>
+            <artifactId>querydsl-apt</artifactId>
+            <version>${querydsl.version}</version>
+            <classifier>jakarta</classifier>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>

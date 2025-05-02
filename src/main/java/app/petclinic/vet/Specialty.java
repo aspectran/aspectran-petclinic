@@ -16,6 +16,8 @@
 package app.petclinic.vet;
 
 import app.petclinic.model.NamedEntity;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 
 import java.io.Serial;
 
@@ -24,10 +26,8 @@ import java.io.Serial;
  *
  * @author Juergen Hoeller
  */
+@Entity
+@Table(name = "specialties")
 public class Specialty extends NamedEntity {
-
-    @Serial
-    private static final long serialVersionUID = -1003564640967266899L;
-
 
 }

@@ -15,7 +15,6 @@
         <properties>
             <item name="basenames" type="array">
                 <value>app.petclinic.common.i18n.messages</value>
-                <value>app.petclinic.common.i18n.ValidationMessages</value>
             </item>
         </properties>
     </bean>

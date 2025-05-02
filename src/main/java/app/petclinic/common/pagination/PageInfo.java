@@ -3,6 +3,9 @@ package app.petclinic.common.pagination;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.springframework.util.Assert;
+
+import java.util.function.LongSupplier;
 
 /**
  * <p>Created: 2025-04-21</p>
@@ -17,7 +20,7 @@ public class PageInfo {
 
     private final int offset;
 
-    private int totalRecords;
+    private long totalRecords;
 
     private int totalPages;
 
@@ -39,17 +42,46 @@ public class PageInfo {
         return offset;
     }
 
-    public int getTotalRecords() {
+    public long getTotalRecords() {
         return totalRecords;
     }
 
-    public void setTotalRecords(int totalRecords) {
+    public void setTotalRecords(long totalRecords) {
         this.totalRecords = totalRecords;
-        this.totalPages = totalRecords / size;
+        this.totalPages = (int)(totalRecords / size);
+    }
+
+    public void setTotalRecords(int actualPageSize, LongSupplier totalSupplier) {
+        Assert.notNull(totalSupplier, "TotalSupplier must not be null");
+        if (isPartialPage(actualPageSize)) {
+            if (isFirstPage()) {
+                setTotalRecords(actualPageSize);
+            } if (actualPageSize > 0) {
+                setTotalRecords(offset + actualPageSize);
+            }
+        } else {
+            setTotalRecords(totalSupplier.getAsLong());
+        }
     }
 
     public int getTotalPages() {
         return totalPages;
+    }
+
+    public boolean isPartialPage(int actualSize) {
+        return actualSize < size;
+    }
+
+    public boolean isFirstPage() {
+        return number == 1;
+    }
+
+    public boolean isLastPage() {
+        return number == totalPages;
+    }
+
+    public boolean hasPreviousPage() {
+        return number > 1;
     }
 
     @NonNull

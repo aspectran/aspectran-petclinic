@@ -13,25 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package app.petclinic.system;
+package app.petclinic.vet;
 
-import com.aspectran.core.component.bean.annotation.Component;
-import com.aspectran.core.component.bean.annotation.Request;
+import java.util.ArrayList;
+import java.util.List;
+
+import jakarta.xml.bind.annotation.XmlElement;
+import jakarta.xml.bind.annotation.XmlRootElement;
 
 /**
- * Controller used to showcase what happens when an exception is thrown
- *
- * @author Michael Isvy
- * <p/>
- * Also see how a view that resolves to "error" has been added ("error.html").
+ * Simple domain object representing a list of veterinarians. Mostly here to be used for
+ * the 'vets' {@link org.springframework.web.servlet.view.xml.MarshallingView}.
+ * @author Arjen Poutsma
  */
-@Component
-public class CrashController {
+@XmlRootElement
+public class Vets {
 
-    @Request("/oups")
-	public String triggerException() {
-		throw new RuntimeException(
-				"Expected: controller used to showcase what " + "happens when an exception is thrown");
-	}
+    private List<Vet> vets;
+
+    @XmlElement
+    public List<Vet> getVetList() {
+        if (vets == null) {
+            vets = new ArrayList<>();
+        }
+        return vets;
+    }
 
 }

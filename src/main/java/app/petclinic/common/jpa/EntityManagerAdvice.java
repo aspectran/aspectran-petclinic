@@ -30,14 +30,16 @@ public class EntityManagerAdvice {
     }
 
     public void flush() {
-        if (checkSession()) {
+        if (checkOpen()) {
             return;
         }
-        entityManager.flush();
+        if (entityManager.isJoinedToTransaction()) {
+            entityManager.flush();
+        }
     }
 
     public void clear() {
-        if (checkSession()) {
+        if (checkOpen()) {
             return;
         }
         entityManager.clear();
@@ -54,7 +56,7 @@ public class EntityManagerAdvice {
         return arbitrarilyClosed;
     }
 
-    private boolean checkSession() {
+    private boolean checkOpen() {
         if (arbitrarilyClosed) {
             return true;
         }

@@ -16,15 +16,16 @@
 
 package app.petclinic.system;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
+import com.aspectran.core.component.bean.annotation.Component;
+import com.aspectran.core.component.bean.annotation.Dispatch;
+import com.aspectran.core.component.bean.annotation.Request;
 
-@Controller
-class WelcomeController {
+@Component
+public class WelcomeController {
 
-	@GetMapping("/")
-	public String welcome() {
-		return "welcome";
+	@Request("/")
+    @Dispatch("welcome")
+	public void welcome() {
 	}
 
 }
