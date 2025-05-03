@@ -5,6 +5,7 @@ import com.aspectran.core.activity.InstantActivitySupport;
 import com.aspectran.core.component.bean.NoSuchBeanException;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
 import com.aspectran.core.component.bean.annotation.AvoidAdvice;
+import com.aspectran.core.component.bean.annotation.Proxiable;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.IllegalRuleException;
@@ -23,6 +24,7 @@ import jakarta.persistence.EntityManagerFactory;
 /**
  * <p>Created: 2025-04-24</p>
  */
+@Proxiable
 public abstract class EntityManagerProvider extends InstantActivitySupport implements InitializableBean {
 
     private final String relevantAspectId;
