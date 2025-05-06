@@ -27,13 +27,16 @@ public class EntityManagerFactoryBean  implements InitializableFactoryBean<Entit
 
     @Override
     public void initialize() throws Exception {
-        entityManagerFactory = Persistence.createEntityManagerFactory(persistenceUnitName);
+        if (entityManagerFactory == null) {
+            entityManagerFactory = Persistence.createEntityManagerFactory(persistenceUnitName);
+        }
     }
 
     @Override
     public void destroy() throws Exception {
         if (entityManagerFactory != null) {
             entityManagerFactory.close();
+            entityManagerFactory = null;
         }
     }
 

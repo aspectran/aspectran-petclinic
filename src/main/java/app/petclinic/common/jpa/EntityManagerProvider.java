@@ -136,7 +136,7 @@ public abstract class EntityManagerProvider extends InstantActivitySupport imple
         AspectAdviceRule afterAspectAdviceRule = aspectRule.newAspectAdviceRule(AspectAdviceType.AFTER);
         afterAspectAdviceRule.setAdviceAction(activity -> {
             EntityManagerAdvice entityManagerAdvice = activity.getBeforeAdviceResult(relevantAspectId);
-            entityManagerAdvice.flush();
+            entityManagerAdvice.commit();
             return null;
         });
 

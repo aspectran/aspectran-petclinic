@@ -29,16 +29,19 @@ public class EntityManagerAgent extends EntityManagerProvider implements EntityM
 
     @Override
     public void persist(Object entity) {
+        getEntityManagerAdvice().transactional();
         getEntityManager().persist(entity);
     }
 
     @Override
     public <T> T merge(T entity) {
+        getEntityManagerAdvice().transactional();
         return getEntityManager().merge(entity);
     }
 
     @Override
     public void remove(Object entity) {
+        getEntityManagerAdvice().transactional();
         getEntityManager().remove(entity);
     }
 
@@ -84,31 +87,37 @@ public class EntityManagerAgent extends EntityManagerProvider implements EntityM
 
     @Override
     public void lock(Object entity, LockModeType lockMode) {
+        getEntityManagerAdvice().transactional();
         getEntityManager().lock(entity, lockMode);
     }
 
     @Override
     public void lock(Object entity, LockModeType lockMode, Map<String, Object> properties) {
+        getEntityManagerAdvice().transactional();
         getEntityManager().lock(entity, lockMode, properties);
     }
 
     @Override
     public void refresh(Object entity) {
+        getEntityManagerAdvice().transactional();
         getEntityManager().refresh(entity);
     }
 
     @Override
     public void refresh(Object entity, Map<String, Object> properties) {
+        getEntityManagerAdvice().transactional();
         getEntityManager().refresh(entity, properties);
     }
 
     @Override
     public void refresh(Object entity, LockModeType lockMode) {
+        getEntityManagerAdvice().transactional();
         getEntityManager().refresh(entity, lockMode);
     }
 
     @Override
     public void refresh(Object entity, LockModeType lockMode, Map<String, Object> properties) {
+        getEntityManagerAdvice().transactional();
         getEntityManager().refresh(entity, lockMode, properties);
     }
 
@@ -129,6 +138,7 @@ public class EntityManagerAgent extends EntityManagerProvider implements EntityM
 
     @Override
     public LockModeType getLockMode(Object entity) {
+        getEntityManagerAdvice().transactional();
         return getEntityManager().getLockMode(entity);
     }
 
@@ -214,6 +224,7 @@ public class EntityManagerAgent extends EntityManagerProvider implements EntityM
 
     @Override
     public void joinTransaction() {
+        getEntityManagerAdvice().transactional();
         getEntityManager().joinTransaction();
     }
 

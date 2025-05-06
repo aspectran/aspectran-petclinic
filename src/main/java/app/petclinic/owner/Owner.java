@@ -18,6 +18,7 @@ package app.petclinic.owner;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import org.springframework.core.style.ToStringCreator;
 import app.petclinic.model.Person;
 import org.springframework.util.Assert;
@@ -92,7 +93,7 @@ public class Owner extends Person {
 		return this.pets;
 	}
 
-	public void addPet(Pet pet) {
+	public void addPet(@NonNull Pet pet) {
 		if (pet.isNew()) {
 			getPets().add(pet);
 		}

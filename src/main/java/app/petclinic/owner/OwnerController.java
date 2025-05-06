@@ -24,6 +24,9 @@ import com.aspectran.core.component.bean.annotation.Action;
 import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.component.bean.annotation.Dispatch;
 import com.aspectran.core.component.bean.annotation.Request;
+import com.aspectran.core.component.bean.annotation.RequestToGet;
+import com.aspectran.core.component.bean.annotation.RequestToPost;
+import com.aspectran.web.support.http.HttpStatusSetter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -65,23 +68,33 @@ public class OwnerController {
         return new Owner();
 	}
 
-	@GetMapping("/owners/new")
-	public String initCreationForm(Map<String, Object> model) {
+	@RequestToGet("/owners/new")
+    @Dispatch("owners/createOrUpdateOwnerForm")
+	public void initCreationForm(Translet translet) {
 		Owner owner = new Owner();
-		model.put("owner", owner);
-		return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
+        translet.setAttribute("owner", owner);
 	}
 
-	@PostMapping("/owners/new")
-	public String processCreationForm(@Valid Owner owner, BindingResult result, RedirectAttributes redirectAttributes) {
-		if (result.hasErrors()) {
-			redirectAttributes.addFlashAttribute("error", "There was an error in creating the owner.");
-			return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
-		}
+	@RequestToPost("/owners/new")
+	public void processCreationForm(Translet translet, Owner owner, BeanValidator beanValidator) {
+        beanValidator.validate(owner, Owner.class);
+        if (beanValidator.hasErrors()) {
+            HttpStatusSetter.badRequest(translet);
+            translet.setAttribute("error", "There was an error in creating the owner.");
+            translet.forward("owners/createOrUpdateOwnerForm");
+            return;
+        }
+
+//		if (result.hasErrors()) {
+//			redirectAttributes.addFlashAttribute("error", "There was an error in creating the owner.");
+//			return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
+//		}
 
 		this.owners.save(owner);
-		redirectAttributes.addFlashAttribute("message", "New Owner Created");
-		return "redirect:/owners/" + owner.getId();
+//		redirectAttributes.addFlashAttribute("message", "New Owner Created");
+//        return "redirect:/owners/" + owner.getId();
+        translet.setAttribute("error", "There was an error in creating the owner.");
+        translet.redirect("/owners/" + owner.getId());
 	}
 
 	@Request("/owners/find")

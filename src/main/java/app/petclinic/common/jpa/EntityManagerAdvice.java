@@ -2,6 +2,7 @@ package app.petclinic.common.jpa;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityTransaction;
 
 /**
  * <p>Created: 2025-04-24</p>
@@ -13,6 +14,8 @@ public class EntityManagerAdvice {
     private EntityManager entityManager;
 
     private boolean arbitrarilyClosed;
+
+    private boolean transactional;
 
     public EntityManagerAdvice(EntityManagerFactory entityManagerFactory) {
         this.entityManagerFactory = entityManagerFactory;
@@ -29,24 +32,25 @@ public class EntityManagerAdvice {
         }
     }
 
-    public void flush() {
-        if (checkOpen()) {
-            return;
-        }
-        if (entityManager.isJoinedToTransaction()) {
-            entityManager.flush();
-        }
-    }
-
-    public void clear() {
-        if (checkOpen()) {
-            return;
-        }
-        entityManager.clear();
-    }
+//    public void flush() {
+//        if (checkOpen()) {
+//            return;
+//        }
+//        if (entityManager.isJoinedToTransaction()) {
+//            entityManager.flush();
+//        }
+//    }
+//
+//    public void clear() {
+//        if (checkOpen()) {
+//            return;
+//        }
+//        entityManager.clear();
+//    }
 
     public void close() {
         if (entityManager != null) {
+            rollbackTransaction();
             entityManager.close();
             entityManager = null;
         }
@@ -54,6 +58,50 @@ public class EntityManagerAdvice {
 
     public boolean isArbitrarilyClosed() {
         return arbitrarilyClosed;
+    }
+
+    public void transactional() {
+        if (checkOpen()) {
+            return;
+        }
+        beginTransaction();
+    }
+
+    public void commit() {
+        if (checkOpen()) {
+            return;
+        }
+        commitTransaction();
+    }
+
+    private void beginTransaction() {
+        if (!transactional) {
+            EntityTransaction transaction = entityManager.getTransaction();
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+            transaction.begin();
+            transactional = true;
+        }
+    }
+
+    private void commitTransaction() {
+        if (transactional) {
+            EntityTransaction transaction = entityManager.getTransaction();
+            if (transaction.isActive()) {
+                transaction.commit();
+            }
+            transactional = false;
+        }
+    }
+
+    private void rollbackTransaction() {
+        if (transactional) {
+            EntityTransaction transaction = entityManager.getTransaction();
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+        }
     }
 
     private boolean checkOpen() {

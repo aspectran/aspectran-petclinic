@@ -19,6 +19,8 @@ import com.aspectran.core.activity.InstantActivitySupport;
 import com.aspectran.core.component.bean.annotation.Bean;
 import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.component.bean.annotation.Destroy;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
 
 /**
  * Shutdown H2 database programmatically.
@@ -30,13 +32,11 @@ public final class H2DatabaseShutdown extends InstantActivitySupport {
 
     @Destroy(profile = "h2")
     public void shutdown() throws Exception {
-//        instantActivity(() -> {
-//            SimpleSqlSession sqlSession = getBeanRegistry().getBean(SimpleSqlSession.class);
-//            try (Statement statement = sqlSession.getConnection().createStatement()) {
-//                statement.execute("SHUTDOWN");
-//            }
-//            return null;
-//        });
+        instantActivity(() -> {
+//            EntityManager entityManager = getBeanRegistry().getBean(DefaultEntityManager.class);
+//            entityManager.createNativeQuery("SHUTDOWN").executeUpdate();
+            return null;
+        });
     }
 
 }

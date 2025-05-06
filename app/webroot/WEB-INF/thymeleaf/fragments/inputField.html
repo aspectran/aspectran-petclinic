@@ -2,7 +2,7 @@
 <body>
   <form>
     <th:block th:fragment="input (label, name, type)">
-      <div th:with="valid=${!#fields.hasErrors(name)}"
+      <div th:with="valid=${errors == null || errors.hasErrors(name)}"
         th:class="${'form-group' + (valid ? '' : ' has-error')}"
         class="form-group">
         <label class="col-sm-2 control-label" th:text="${label}">Label</label>

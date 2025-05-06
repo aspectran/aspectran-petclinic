@@ -33,7 +33,7 @@ public class VetDao {
     @Autowired
     public VetDao(DefaultEntityManager entityManager) {
         this.entityManager = entityManager;
-        this.queryFactory = new JPAQueryFactory(JPQLTemplates.DEFAULT, entityManager);
+        this.queryFactory = entityManager.getQueryFactory();
     }
 
     public Vet findById(int id) {
@@ -41,6 +41,7 @@ public class VetDao {
     }
 
     public List<Vet> getVetList(@NonNull PageInfo pageInfo) {
+//        entityManager.getTransaction().begin();
         QVet vet = QVet.vet;
         List<Vet> listVets = queryFactory.selectFrom(vet)
                 .offset(pageInfo.getOffset())
@@ -52,6 +53,7 @@ public class VetDao {
                 .from(vet);
 
         pageInfo.setTotalRecords(listVets.size(), countQuery::fetchOne);
+//        entityManager.getTransaction().commit();
         return listVets;
     }
 
