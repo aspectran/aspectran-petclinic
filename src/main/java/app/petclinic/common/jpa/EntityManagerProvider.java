@@ -4,8 +4,6 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.InstantActivitySupport;
 import com.aspectran.core.component.bean.NoSuchBeanException;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
-import com.aspectran.core.component.bean.annotation.AvoidAdvice;
-import com.aspectran.core.component.bean.annotation.Proxiable;
 import com.aspectran.core.context.rule.AspectAdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.IllegalRuleException;
@@ -24,7 +22,6 @@ import jakarta.persistence.EntityManagerFactory;
 /**
  * <p>Created: 2025-04-24</p>
  */
-@Proxiable
 public abstract class EntityManagerProvider extends InstantActivitySupport implements InitializableBean {
 
     private final String relevantAspectId;
@@ -38,12 +35,10 @@ public abstract class EntityManagerProvider extends InstantActivitySupport imple
         this.relevantAspectId = relevantAspectId;
     }
 
-    @AvoidAdvice
     public void setEntityManagerFactoryBeanId(String entityManagerFactoryBeanId) {
         this.entityManagerFactoryBeanId = entityManagerFactoryBeanId;
     }
 
-    @AvoidAdvice
     protected EntityManager getEntityManager() {
         EntityManagerAdvice entityManagerAdvice = getEntityManagerAdvice();
         EntityManager entityManager = entityManagerAdvice.getEntityManager();
@@ -58,7 +53,6 @@ public abstract class EntityManagerProvider extends InstantActivitySupport imple
         return entityManager;
     }
 
-    @AvoidAdvice
     @NonNull
     protected EntityManagerAdvice getEntityManagerAdvice() {
         checkTransactional();
@@ -76,7 +70,6 @@ public abstract class EntityManagerProvider extends InstantActivitySupport imple
         return entityManagerAdvice;
     }
 
-    @AvoidAdvice
     private void checkTransactional() {
         if (getAvailableActivity().getMode() == Activity.Mode.PROXY) {
             throw new IllegalStateException("Cannot be executed on a non-transactional activity;" +
@@ -84,7 +77,6 @@ public abstract class EntityManagerProvider extends InstantActivitySupport imple
         }
     }
 
-    @AvoidAdvice
     @Override
     public void initialize() {
         if (!getActivityContext().getAspectRuleRegistry().contains(relevantAspectId)) {
@@ -92,7 +84,6 @@ public abstract class EntityManagerProvider extends InstantActivitySupport imple
         }
     }
 
-    @AvoidAdvice
     protected void registerSqlSessionAdvice() {
         if (getActivityContext().getAspectRuleRegistry().contains(relevantAspectId)) {
             throw new IllegalStateException("EntityManagerAdvice is already registered");

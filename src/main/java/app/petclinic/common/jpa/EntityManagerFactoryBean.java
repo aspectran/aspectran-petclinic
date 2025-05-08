@@ -2,14 +2,12 @@ package app.petclinic.common.jpa;
 
 import com.aspectran.core.component.bean.ablility.DisposableBean;
 import com.aspectran.core.component.bean.ablility.InitializableFactoryBean;
-import com.aspectran.core.component.bean.annotation.AvoidAdvice;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Persistence;
 
 /**
  * <p>Created: 2025-04-24</p>
  */
-@AvoidAdvice
 public class EntityManagerFactoryBean  implements InitializableFactoryBean<EntityManagerFactory>, DisposableBean {
 
     private final String persistenceUnitName;
