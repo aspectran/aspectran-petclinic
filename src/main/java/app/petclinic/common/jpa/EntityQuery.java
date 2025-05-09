@@ -1,5 +1,16 @@
 package app.petclinic.common.jpa;
 
+import com.aspectran.core.component.bean.annotation.Advisable;
+import com.querydsl.core.Tuple;
+import com.querydsl.core.types.EntityPath;
+import com.querydsl.core.types.Expression;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.jpa.JPQLQueryFactory;
+import com.querydsl.jpa.JPQLTemplates;
+import com.querydsl.jpa.impl.JPADeleteClause;
+import com.querydsl.jpa.impl.JPAInsertClause;
+import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAUpdateClause;
 import jakarta.persistence.EntityGraph;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -21,276 +32,424 @@ import java.util.Map;
 /**
  * <p>Created: 2025-04-24</p>
  */
-public class EntityManagerAgent extends EntityManagerProvider implements EntityManager {
+public class EntityQuery extends EntityManagerProvider implements EntityManager, JPQLQueryFactory {
 
-    public EntityManagerAgent(String relevantAspectId) {
+    private JPQLTemplates templates;
+
+    public EntityQuery(String relevantAspectId) {
         super(relevantAspectId);
     }
 
+    public void setTemplates(JPQLTemplates templates) {
+        this.templates = templates;
+    }
+
+    @Advisable
     @Override
     public void persist(Object entity) {
         getEntityManagerAdvice().transactional();
         getEntityManager().persist(entity);
     }
 
+    @Advisable
     @Override
     public <T> T merge(T entity) {
         getEntityManagerAdvice().transactional();
         return getEntityManager().merge(entity);
     }
 
+    @Advisable
     @Override
     public void remove(Object entity) {
         getEntityManagerAdvice().transactional();
         getEntityManager().remove(entity);
     }
 
+    @Advisable
     @Override
     public <T> T find(Class<T> entityClass, Object primaryKey) {
         return getEntityManager().find(entityClass, primaryKey);
     }
 
+    @Advisable
     @Override
     public <T> T find(Class<T> entityClass, Object primaryKey, Map<String, Object> properties) {
         return getEntityManager().find(entityClass, primaryKey, properties);
     }
 
+    @Advisable
     @Override
     public <T> T find(Class<T> entityClass, Object primaryKey, LockModeType lockMode) {
         return getEntityManager().find(entityClass, primaryKey, lockMode);
     }
 
+    @Advisable
     @Override
     public <T> T find(Class<T> entityClass, Object primaryKey, LockModeType lockMode, Map<String, Object> properties) {
         return getEntityManager().find(entityClass, primaryKey, lockMode, properties);
     }
 
+    @Advisable
     @Override
     public <T> T getReference(Class<T> entityClass, Object primaryKey) {
         return getEntityManager().getReference(entityClass, primaryKey);
     }
 
+    @Advisable
     @Override
     public void flush() {
         getEntityManager().flush();
     }
 
+    @Advisable
     @Override
     public void setFlushMode(FlushModeType flushMode) {
         getEntityManager().setFlushMode(flushMode);
     }
 
+    @Advisable
     @Override
     public FlushModeType getFlushMode() {
         return getEntityManager().getFlushMode();
     }
 
+    @Advisable
     @Override
     public void lock(Object entity, LockModeType lockMode) {
         getEntityManagerAdvice().transactional();
         getEntityManager().lock(entity, lockMode);
     }
 
+    @Advisable
     @Override
     public void lock(Object entity, LockModeType lockMode, Map<String, Object> properties) {
         getEntityManagerAdvice().transactional();
         getEntityManager().lock(entity, lockMode, properties);
     }
 
+    @Advisable
     @Override
     public void refresh(Object entity) {
         getEntityManagerAdvice().transactional();
         getEntityManager().refresh(entity);
     }
 
+    @Advisable
     @Override
     public void refresh(Object entity, Map<String, Object> properties) {
         getEntityManagerAdvice().transactional();
         getEntityManager().refresh(entity, properties);
     }
 
+    @Advisable
     @Override
     public void refresh(Object entity, LockModeType lockMode) {
         getEntityManagerAdvice().transactional();
         getEntityManager().refresh(entity, lockMode);
     }
 
+    @Advisable
     @Override
     public void refresh(Object entity, LockModeType lockMode, Map<String, Object> properties) {
         getEntityManagerAdvice().transactional();
         getEntityManager().refresh(entity, lockMode, properties);
     }
 
+    @Advisable
     @Override
     public void clear() {
         getEntityManager().clear();
     }
 
+    @Advisable
     @Override
     public void detach(Object entity) {
         getEntityManager().detach(entity);
     }
 
+    @Advisable
     @Override
     public boolean contains(Object entity) {
         return getEntityManager().contains(entity);
     }
 
+    @Advisable
     @Override
     public LockModeType getLockMode(Object entity) {
         getEntityManagerAdvice().transactional();
         return getEntityManager().getLockMode(entity);
     }
 
+    @Advisable
     @Override
     public void setProperty(String propertyName, Object value) {
         getEntityManager().setProperty(propertyName, value);
     }
 
+    @Advisable
     @Override
     public Map<String, Object> getProperties() {
         return getEntityManager().getProperties();
     }
 
+    @Advisable
     @Override
     public Query createQuery(String qlString) {
         return getEntityManager().createQuery(qlString);
     }
 
+    @Advisable
     @Override
     public <T> TypedQuery<T> createQuery(CriteriaQuery<T> criteriaQuery) {
         return getEntityManager().createQuery(criteriaQuery);
     }
 
+    @Advisable
     @Override
     public Query createQuery(CriteriaUpdate updateQuery) {
+        getEntityManagerAdvice().transactional();
         return getEntityManager().createQuery(updateQuery);
     }
 
+    @Advisable
     @Override
     public Query createQuery(CriteriaDelete deleteQuery) {
+        getEntityManagerAdvice().transactional();
         return getEntityManager().createQuery(deleteQuery);
     }
 
+    @Advisable
     @Override
     public <T> TypedQuery<T> createQuery(String qlString, Class<T> resultClass) {
         return getEntityManager().createQuery(qlString, resultClass);
     }
 
+    @Advisable
     @Override
     public Query createNamedQuery(String name) {
         return getEntityManager().createNamedQuery(name);
     }
 
+    @Advisable
     @Override
     public <T> TypedQuery<T> createNamedQuery(String name, Class<T> resultClass) {
         return getEntityManager().createNamedQuery(name, resultClass);
     }
 
+    @Advisable
     @Override
     public Query createNativeQuery(String sqlString) {
         return getEntityManager().createNativeQuery(sqlString);
     }
 
+    @Advisable
     @Override
     public Query createNativeQuery(String sqlString, Class resultClass) {
         return getEntityManager().createNativeQuery(sqlString, resultClass);
     }
 
+    @Advisable
     @Override
     public Query createNativeQuery(String sqlString, String resultSetMapping) {
         return getEntityManager().createNativeQuery(sqlString, resultSetMapping);
     }
 
+    @Advisable
     @Override
     public StoredProcedureQuery createNamedStoredProcedureQuery(String name) {
         return getEntityManager().createNamedStoredProcedureQuery(name);
     }
 
+    @Advisable
     @Override
     public StoredProcedureQuery createStoredProcedureQuery(String procedureName) {
         return getEntityManager().createStoredProcedureQuery(procedureName);
     }
 
+    @Advisable
     @Override
     public StoredProcedureQuery createStoredProcedureQuery(String procedureName, Class... resultClasses) {
         return getEntityManager().createStoredProcedureQuery(procedureName, resultClasses);
     }
 
+    @Advisable
     @Override
     public StoredProcedureQuery createStoredProcedureQuery(String procedureName, String... resultSetMappings) {
         return getEntityManager().createStoredProcedureQuery(procedureName, resultSetMappings);
     }
 
+    @Advisable
     @Override
     public void joinTransaction() {
         getEntityManagerAdvice().transactional();
         getEntityManager().joinTransaction();
     }
 
+    @Advisable
     @Override
     public boolean isJoinedToTransaction() {
         return getEntityManager().isJoinedToTransaction();
     }
 
+    @Advisable
     @Override
     public <T> T unwrap(Class<T> cls) {
         return getEntityManager().unwrap(cls);
     }
 
+    @Advisable
     @Override
     public Object getDelegate() {
         return getEntityManager().getDelegate();
     }
 
+    @Advisable
     @Override
     public void close() {
         getEntityManager().close();
     }
 
+    @Advisable
     @Override
     public boolean isOpen() {
         return getEntityManager().isOpen();
     }
 
+    @Advisable
     @Override
     public EntityTransaction getTransaction() {
         return getEntityManager().getTransaction();
     }
 
+    @Advisable
     @Override
     public EntityManagerFactory getEntityManagerFactory() {
         return getEntityManager().getEntityManagerFactory();
     }
 
+    @Advisable
     @Override
     public CriteriaBuilder getCriteriaBuilder() {
         return getEntityManager().getCriteriaBuilder();
     }
 
+    @Advisable
     @Override
     public Metamodel getMetamodel() {
         return getEntityManager().getMetamodel();
     }
 
+    @Advisable
     @Override
     public <T> EntityGraph<T> createEntityGraph(Class<T> rootType) {
         return getEntityManager().createEntityGraph(rootType);
     }
 
+    @Advisable
     @Override
     public EntityGraph<?> createEntityGraph(String graphName) {
         return getEntityManager().createEntityGraph(graphName);
     }
 
+    @Advisable
     @Override
     public EntityGraph<?> getEntityGraph(String graphName) {
         return getEntityManager().getEntityGraph(graphName);
     }
 
+    @Advisable
     @Override
     public <T> List<EntityGraph<? super T>> getEntityGraphs(Class<T> entityClass) {
         return getEntityManager().getEntityGraphs(entityClass);
+    }
+
+    @Advisable
+    @Override
+    public JPADeleteClause delete(EntityPath<?> path) {
+        getEntityManagerAdvice().transactional();
+        if (templates != null) {
+            return new JPADeleteClause(getEntityManager(), path, templates);
+        } else {
+            return new JPADeleteClause(getEntityManager(), path);
+        }
+    }
+
+    @Override
+    public <T> JPAQuery<T> select(Expression<T> expr) {
+        return query().select(expr);
+    }
+
+    @Advisable
+    @Override
+    public JPAQuery<Tuple> select(Expression<?>... exprs) {
+        return query().select(exprs);
+    }
+
+    @Override
+    public <T> JPAQuery<T> selectDistinct(Expression<T> expr) {
+        return select(expr).distinct();
+    }
+
+    @Override
+    public JPAQuery<Tuple> selectDistinct(Expression<?>... exprs) {
+        return select(exprs).distinct();
+    }
+
+    @Override
+    public JPAQuery<Integer> selectOne() {
+        return select(Expressions.ONE);
+    }
+
+    @Override
+    public JPAQuery<Integer> selectZero() {
+        return select(Expressions.ZERO);
+    }
+
+    @Override
+    public <T> JPAQuery<T> selectFrom(EntityPath<T> from) {
+        return select(from).from(from);
+    }
+
+    @Override
+    public JPAQuery<?> from(EntityPath<?> from) {
+        return query().from(from);
+    }
+
+    @Override
+    public JPAQuery<?> from(EntityPath<?>... from) {
+        return query().from(from);
+    }
+
+    @Advisable
+    @Override
+    public JPAUpdateClause update(EntityPath<?> path) {
+        getEntityManagerAdvice().transactional();
+        if (templates != null) {
+            return new JPAUpdateClause(getEntityManager(), path, templates);
+        } else {
+            return new JPAUpdateClause(getEntityManager(), path);
+        }
+    }
+
+    @Advisable
+    @Override
+    public JPAInsertClause insert(EntityPath<?> path) {
+        getEntityManagerAdvice().transactional();
+        if (templates != null) {
+            return new JPAInsertClause(getEntityManager(), path, templates);
+        } else {
+            return new JPAInsertClause(getEntityManager(), path);
+        }
+    }
+
+    @Advisable
+    @Override
+    public JPAQuery<?> query() {
+        if (templates != null) {
+            return new JPAQuery<Void>(getEntityManager(), templates);
+        } else {
+            return new JPAQuery<Void>(getEntityManager());
+        }
     }
 
 }

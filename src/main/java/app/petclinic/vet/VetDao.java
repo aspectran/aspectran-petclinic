@@ -1,14 +1,12 @@
 package app.petclinic.vet;
 
-import app.petclinic.common.db.DefaultEntityManager;
+import app.petclinic.common.db.DefaultEntityQuery;
+import app.petclinic.common.jpa.EntityQuery;
 import app.petclinic.common.pagination.PageInfo;
 import com.aspectran.core.component.bean.annotation.Autowired;
 import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.querydsl.jpa.JPQLTemplates;
 import com.querydsl.jpa.impl.JPAQuery;
-import com.querydsl.jpa.impl.JPAQueryFactory;
-import jakarta.persistence.EntityManager;
 
 import java.util.List;
 
@@ -26,29 +24,27 @@ import java.util.List;
 @Component
 public class VetDao {
 
-    private final EntityManager entityManager;
-
-    private final JPAQueryFactory queryFactory;
+    private final EntityQuery entityQuery;
 
     @Autowired
-    public VetDao(DefaultEntityManager entityManager) {
-        this.entityManager = entityManager;
-        this.queryFactory = entityManager.getQueryFactory();
+    public VetDao(DefaultEntityQuery entityQuery) {
+        this.entityQuery = entityQuery;
     }
 
     public Vet findById(int id) {
-        return entityManager.find(Vet.class, id);
+        return entityQuery.find(Vet.class, id);
     }
 
     public List<Vet> getVetList(@NonNull PageInfo pageInfo) {
 //        entityManager.getTransaction().begin();
         QVet vet = QVet.vet;
-        List<Vet> listVets = queryFactory.selectFrom(vet)
+        List<Vet> listVets = entityQuery
+                .selectFrom(vet)
                 .offset(pageInfo.getOffset())
                 .limit(pageInfo.getSize())
                 .fetch();
 
-        JPAQuery<Long> countQuery = queryFactory
+        JPAQuery<Long> countQuery = entityQuery
                 .select(vet.count())
                 .from(vet);
 

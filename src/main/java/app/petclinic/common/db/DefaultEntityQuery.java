@@ -1,24 +1,20 @@
 package app.petclinic.common.db;
 
-import app.petclinic.common.jpa.EntityManagerAgent;
+import app.petclinic.common.jpa.EntityQuery;
 import com.aspectran.core.component.bean.annotation.Bean;
 import com.aspectran.core.component.bean.annotation.Component;
 import com.querydsl.jpa.JPQLTemplates;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 
 /**
  * <p>Created: 2025-05-02</p>
  */
 @Component
 @Bean(lazyDestroy = true)
-public class DefaultEntityManager extends EntityManagerAgent {
+public class DefaultEntityQuery extends EntityQuery {
 
-    public DefaultEntityManager() {
+    public DefaultEntityQuery() {
         super("defaultEntityManagerAspect");
-    }
-
-    public JPAQueryFactory getQueryFactory() {
-        return new JPAQueryFactory(JPQLTemplates.DEFAULT, this);
+        setTemplates(JPQLTemplates.DEFAULT);
     }
 
 }

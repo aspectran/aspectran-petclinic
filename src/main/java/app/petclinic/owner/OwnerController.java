@@ -26,6 +26,7 @@ import com.aspectran.core.component.bean.annotation.Dispatch;
 import com.aspectran.core.component.bean.annotation.Request;
 import com.aspectran.core.component.bean.annotation.RequestToGet;
 import com.aspectran.core.component.bean.annotation.RequestToPost;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.web.support.http.HttpStatusSetter;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -76,24 +77,17 @@ public class OwnerController {
 	}
 
 	@RequestToPost("/owners/new")
-	public void processCreationForm(Translet translet, Owner owner, BeanValidator beanValidator) {
+	public void processCreationForm(@NonNull Translet translet, Owner owner, @NonNull BeanValidator beanValidator) {
         beanValidator.validate(owner, Owner.class);
         if (beanValidator.hasErrors()) {
             HttpStatusSetter.badRequest(translet);
-            translet.setAttribute("error", "There was an error in creating the owner.");
+            translet.getOutputFlashMap().put("error", "There was an error in creating the owner.");
             translet.forward("owners/createOrUpdateOwnerForm");
             return;
         }
 
-//		if (result.hasErrors()) {
-//			redirectAttributes.addFlashAttribute("error", "There was an error in creating the owner.");
-//			return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
-//		}
-
 		this.owners.save(owner);
-//		redirectAttributes.addFlashAttribute("message", "New Owner Created");
-//        return "redirect:/owners/" + owner.getId();
-        translet.setAttribute("error", "There was an error in creating the owner.");
+		translet.getOutputFlashMap().put("message", "New Owner Created");
         translet.redirect("/owners/" + owner.getId());
 	}
 
