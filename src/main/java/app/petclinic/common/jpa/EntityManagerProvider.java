@@ -4,13 +4,12 @@ import com.aspectran.core.activity.Activity;
 import com.aspectran.core.activity.InstantActivitySupport;
 import com.aspectran.core.component.bean.NoSuchBeanException;
 import com.aspectran.core.component.bean.ablility.InitializableBean;
-import com.aspectran.core.context.rule.AspectAdviceRule;
+import com.aspectran.core.context.rule.AdviceRule;
 import com.aspectran.core.context.rule.AspectRule;
 import com.aspectran.core.context.rule.IllegalRuleException;
 import com.aspectran.core.context.rule.JoinpointRule;
 import com.aspectran.core.context.rule.PointcutPatternRule;
 import com.aspectran.core.context.rule.PointcutRule;
-import com.aspectran.core.context.rule.type.AspectAdviceType;
 import com.aspectran.core.context.rule.type.JoinpointTargetType;
 import com.aspectran.core.context.rule.type.PointcutType;
 import com.aspectran.utils.ClassUtils;
@@ -56,7 +55,7 @@ public abstract class EntityManagerProvider extends InstantActivitySupport imple
     @NonNull
     protected EntityManagerAdvice getEntityManagerAdvice() {
         checkTransactional();
-        EntityManagerAdvice entityManagerAdvice = getAvailableActivity().getAspectAdviceBean(relevantAspectId);
+        EntityManagerAdvice entityManagerAdvice = getAvailableActivity().getAdviceBean(relevantAspectId);
         if (entityManagerAdvice == null) {
             entityManagerAdvice = getAvailableActivity().getBeforeAdviceResult(relevantAspectId);
         }
@@ -117,22 +116,22 @@ public abstract class EntityManagerProvider extends InstantActivitySupport imple
 
         aspectRule.setJoinpointRule(joinpointRule);
 
-        AspectAdviceRule beforeAspectAdviceRule = aspectRule.newAspectAdviceRule(AspectAdviceType.BEFORE);
-        beforeAspectAdviceRule.setAdviceAction(activity -> {
+        AdviceRule beforeAdviceRule = aspectRule.newBeforeAdviceRule();
+        beforeAdviceRule.setAdviceAction(activity -> {
             EntityManagerAdvice entityManagerAdvice = new EntityManagerAdvice(entityManagerFactory);
             entityManagerAdvice.open();
             return entityManagerAdvice;
         });
 
-        AspectAdviceRule afterAspectAdviceRule = aspectRule.newAspectAdviceRule(AspectAdviceType.AFTER);
-        afterAspectAdviceRule.setAdviceAction(activity -> {
+        AdviceRule afterAdviceRule = aspectRule.newAfterAdviceRule();
+        afterAdviceRule.setAdviceAction(activity -> {
             EntityManagerAdvice entityManagerAdvice = activity.getBeforeAdviceResult(relevantAspectId);
             entityManagerAdvice.commit();
             return null;
         });
 
-        AspectAdviceRule finallyAspectAdviceRule = aspectRule.newAspectAdviceRule(AspectAdviceType.FINALLY);
-        finallyAspectAdviceRule.setAdviceAction(activity -> {
+        AdviceRule finallyAdviceRule = aspectRule.newFinallyAdviceRule();
+        finallyAdviceRule.setAdviceAction(activity -> {
             EntityManagerAdvice entityManagerAdvice = activity.getBeforeAdviceResult(relevantAspectId);
             entityManagerAdvice.close();
             return null;
