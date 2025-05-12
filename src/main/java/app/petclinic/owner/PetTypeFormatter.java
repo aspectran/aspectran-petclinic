@@ -36,10 +36,10 @@ import java.util.Locale;
 @Component
 public class PetTypeFormatter implements Formatter<PetType> {
 
-	private final OwnerRepository owners;
+	private final OwnerDao owners;
 
 	@Autowired
-	public PetTypeFormatter(OwnerRepository owners) {
+	public PetTypeFormatter(OwnerDao owners) {
 		this.owners = owners;
 	}
 

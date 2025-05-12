@@ -36,7 +36,6 @@ public class VetDao {
     }
 
     public List<Vet> getVetList(@NonNull PageInfo pageInfo) {
-//        entityManager.getTransaction().begin();
         QVet vet = QVet.vet;
         List<Vet> listVets = entityQuery
                 .selectFrom(vet)
@@ -49,7 +48,6 @@ public class VetDao {
                 .from(vet);
 
         pageInfo.setTotalRecords(listVets.size(), countQuery::fetchOne);
-//        entityManager.getTransaction().commit();
         return listVets;
     }
 

@@ -13,44 +13,42 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package app.petclinic.common.validation;
+package app.petclinic.common.validation.constraints;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
-import jakarta.validation.ReportAsSingleViolation;
-import jakarta.validation.constraints.Pattern;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
 import static java.lang.annotation.ElementType.ANNOTATION_TYPE;
-import static java.lang.annotation.ElementType.CONSTRUCTOR;
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.PARAMETER;
-import static java.lang.annotation.ElementType.TYPE_USE;
+import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Documented
-@Constraint(validatedBy = {})
-@Target({METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE})
+@Constraint(validatedBy = RepeatedFieldValidator.class)
+@Target({ TYPE, ANNOTATION_TYPE })
 @Retention(RUNTIME)
-@ReportAsSingleViolation
-@Pattern(regexp = "^\\d+$")
-public @interface NumericCharacters {
+public @interface RepeatedField {
 
-    String message() default "{common.validation.NumericCharacters.message}";
+	String message() default "{common.validation.RepeatedField.message}";
 
-    Class<?>[] groups() default {};
+	Class<?>[] groups() default {};
 
-    Class<? extends Payload>[] payload() default {};
+	Class<? extends Payload>[] payload() default {};
 
-    @Target({METHOD, FIELD, ANNOTATION_TYPE, CONSTRUCTOR, PARAMETER, TYPE_USE})
-    @Retention(RUNTIME)
-    @Documented
-    @interface List {
-        NumericCharacters[] value();
-    }
+	String field();
+
+	String dependField();
+
+	String dependFieldName();
+
+	@Target({ TYPE, ANNOTATION_TYPE })
+	@Retention(RUNTIME)
+	@Documented
+	@interface List {
+		RepeatedField[] value();
+	}
 
 }

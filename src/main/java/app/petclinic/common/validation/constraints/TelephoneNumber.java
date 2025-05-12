@@ -13,7 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package app.petclinic.common.validation;
+package app.petclinic.common.validation.constraints;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;

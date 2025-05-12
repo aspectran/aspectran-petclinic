@@ -39,9 +39,9 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Controller
 class VisitController {
 
-	private final OwnerRepository owners;
+	private final OwnerDao owners;
 
-	public VisitController(OwnerRepository owners) {
+	public VisitController(OwnerDao owners) {
 		this.owners = owners;
 	}
 

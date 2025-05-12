@@ -34,18 +34,18 @@ import java.util.List;
 @Component
 public class VetController {
 
-	private final VetDao dao;
+	private final VetDao vetDao;
 
 	@Autowired
-    public VetController(VetDao dao) {
-		this.dao = dao;
+    public VetController(VetDao vetDao) {
+		this.vetDao = vetDao;
 	}
 
     @Request("/vets.html")
     @Dispatch("vets/vetList")
 	public void vetList(@NonNull Translet translet) {
         PageInfo pageInfo = PageInfo.of(translet);
-        List<Vet> listVets = dao.getVetList(pageInfo);
+        List<Vet> listVets = vetDao.getVetList(pageInfo);
 
         translet.setAttribute("listVets", listVets);
         translet.setAttribute("page", pageInfo);

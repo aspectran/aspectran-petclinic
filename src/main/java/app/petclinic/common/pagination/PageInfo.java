@@ -86,10 +86,15 @@ public class PageInfo {
 
     @NonNull
     public static PageInfo of(@NonNull Translet translet) {
+        return of(translet, DEFAULT_PAGE_SIZE);
+    }
+
+    @NonNull
+    public static PageInfo of(@NonNull Translet translet, int defaultPageSize) {
         String pageNumber = translet.getParameter("page");
         String pageSize = translet.getParameter("size");
         int number = StringUtils.isEmpty(pageNumber) ? 1 : Integer.parseInt(pageNumber);
-        int size = StringUtils.isEmpty(pageSize) ? DEFAULT_PAGE_SIZE : Integer.parseInt(pageSize);
+        int size = StringUtils.isEmpty(pageSize) ? defaultPageSize : Integer.parseInt(pageSize);
         return of(number, size);
     }
 

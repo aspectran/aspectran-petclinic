@@ -16,21 +16,22 @@
 package app.petclinic.owner;
 
 import java.util.List;
-import java.util.Map;
 
-import app.petclinic.common.validation.BeanValidator;
+import app.petclinic.common.pagination.PageInfo;
+import app.petclinic.common.validation.BindingErrors;
+import app.petclinic.common.validation.SimpleValidator;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.component.bean.annotation.Action;
+import com.aspectran.core.component.bean.annotation.Autowired;
 import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.component.bean.annotation.Dispatch;
 import com.aspectran.core.component.bean.annotation.Request;
 import com.aspectran.core.component.bean.annotation.RequestToGet;
 import com.aspectran.core.component.bean.annotation.RequestToPost;
+import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.web.support.http.HttpStatusSetter;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
@@ -53,9 +54,16 @@ public class OwnerController {
 
 	private static final String VIEWS_OWNER_CREATE_OR_UPDATE_FORM = "owners/createOrUpdateOwnerForm";
 
-	private final OwnerRepository owners;
+    private final OwnerDao ownerDao;
 
-	public OwnerController() {
+    private final SimpleValidator validator;
+
+	private final OwnerDao owners;
+
+	@Autowired
+    public OwnerController(OwnerDao ownerDao, SimpleValidator validator) {
+        this.ownerDao = ownerDao;
+        this.validator = validator;
         this.owners = null;
 	}
 
@@ -65,28 +73,28 @@ public class OwnerController {
 	}
 
 	private Owner findOwner(Integer ownerId) {
-//		return ownerId == null ? new Owner() : this.owners.findById(ownerId);
-        return new Owner();
+		return ownerId == null ? new Owner() : ownerDao.findById(ownerId);
 	}
 
 	@RequestToGet("/owners/new")
     @Dispatch("owners/createOrUpdateOwnerForm")
-	public void initCreationForm(Translet translet) {
+	public void initCreationForm(@NonNull Translet translet) {
 		Owner owner = new Owner();
         translet.setAttribute("owner", owner);
 	}
 
 	@RequestToPost("/owners/new")
-	public void processCreationForm(@NonNull Translet translet, Owner owner, @NonNull BeanValidator beanValidator) {
-        beanValidator.validate(owner, Owner.class);
-        if (beanValidator.hasErrors()) {
-            HttpStatusSetter.badRequest(translet);
+	public void processCreationForm(@NonNull Translet translet, Owner owner) {
+        BindingErrors bindingErrors = validator.validate(owner);
+        if (bindingErrors.hasErrors()) {
+            translet.setAttribute("errors", bindingErrors.getErrors());
+            translet.setAttribute("owner", owner);
             translet.getOutputFlashMap().put("error", "There was an error in creating the owner.");
-            translet.forward("owners/createOrUpdateOwnerForm");
+            translet.dispatch("owners/createOrUpdateOwnerForm");
             return;
         }
 
-		this.owners.save(owner);
+        ownerDao.save(owner);
 		translet.getOutputFlashMap().put("message", "New Owner Created");
         translet.redirect("/owners/" + owner.getId());
 	}
@@ -99,49 +107,56 @@ public class OwnerController {
 
 	@Request("/owners")
 //    @Dispatch("owners/ownersList")
-	public void processFindForm(Translet translet, int page, String lastName, BeanValidator beanValidator) {
-        beanValidator.putError("lastName", "notFound");
-        translet.setAttribute("owner", findOwner(0));
-        translet.setAttribute("errors", beanValidator.getErrors());
-        translet.dispatch("owners/findOwners");
+	public void processFindForm(Translet translet, String lastName) {
 
-//		// allow parameterless GET request for /owners to return all records
+//        beanValidator.putError("lastName", "notFound");
+//        translet.setAttribute("owner", findOwner(0));
+//        translet.setAttribute("errors", beanValidator.getErrors());
+//        translet.dispatch("owners/findOwners");
+
+		// allow parameterless GET request for /owners to return all records
 //		if (owner.getLastName() == null) {
 //			owner.setLastName(""); // empty string signifies broadest possible search
 //		}
 //
-//		// find owners by last name
-//		Page<Owner> ownersResults = findPaginatedForOwnersLastName(page, owner.getLastName());
-//		if (ownersResults.isEmpty()) {
-//			// no owners found
-//			result.rejectValue("lastName", "notFound", "not found");
-//			return "owners/findOwners";
-//		}
-//
-//		if (ownersResults.getTotalElements() == 1) {
-//			// 1 owner found
-//			owner = ownersResults.iterator().next();
-//			return "redirect:/owners/" + owner.getId();
-//		}
-//
-//		// multiple owners found
-//		return addPaginationModel(page, model, ownersResults);
+		// find owners by last name
+        PageInfo pageInfo = PageInfo.of(translet, 5);
+        List<Owner> listOwners = ownerDao.findByLastName(StringUtils.nullToEmpty(lastName), pageInfo);
+		if (listOwners.isEmpty()) {
+			// no owners found
+            BindingErrors bindingErrors = new BindingErrors();
+            bindingErrors.putError("lastName", "notFound");
+            translet.setAttribute("errors", bindingErrors.getErrors());
+            translet.setAttribute("owner", new Owner());
+            translet.dispatch("owners/findOwners");
+			return;
+		}
+
+		if (listOwners.size() == 1) {
+			// 1 owner found
+			Owner owner = listOwners.get(0);
+            translet.redirect("/owners/" + owner.getId());
+			return;
+		}
+
+        // multiple owners found
+        translet.setAttribute("listOwners", listOwners);
+        translet.setAttribute("page", pageInfo);
+        translet.dispatch("owners/ownersList");
 	}
 
-	private String addPaginationModel(int page, Model model, Page<Owner> paginated) {
-		List<Owner> listOwners = paginated.getContent();
-		model.addAttribute("currentPage", page);
-		model.addAttribute("totalPages", paginated.getTotalPages());
-		model.addAttribute("totalItems", paginated.getTotalElements());
-		model.addAttribute("listOwners", listOwners);
-		return "owners/ownersList";
-	}
+//	private String addPaginationModel(int page, Model model, Page<Owner> paginated) {
+//		List<Owner> listOwners = paginated.getContent();
+//		model.addAttribute("currentPage", page);
+//		model.addAttribute("totalPages", paginated.getTotalPages());
+//		model.addAttribute("totalItems", paginated.getTotalElements());
+//		model.addAttribute("listOwners", listOwners);
+//		return "owners/ownersList";
+//	}
 
-	private Page<Owner> findPaginatedForOwnersLastName(int page, String lastname) {
-		int pageSize = 5;
-		Pageable pageable = PageRequest.of(page - 1, pageSize);
-		return owners.findByLastName(lastname, pageable);
-	}
+//	private Page<Owner> findPaginatedForOwnersLastName(PageInfo pageInfo, String lastname) {
+//		return owners.findByLastName(lastname, pageInfo);
+//	}
 
 	@GetMapping("/owners/{ownerId}/edit")
 	public String initUpdateOwnerForm(@PathVariable("ownerId") int ownerId, Model model) {
