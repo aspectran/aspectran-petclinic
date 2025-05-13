@@ -12,7 +12,7 @@ import java.util.function.LongSupplier;
  */
 public class PageInfo {
 
-    private static final int DEFAULT_PAGE_SIZE = 3;
+    private static final int DEFAULT_PAGE_SIZE = 2;
 
     private final int number;
 
@@ -20,7 +20,7 @@ public class PageInfo {
 
     private final int offset;
 
-    private long totalRecords;
+    private long totalElements;
 
     private int totalPages;
 
@@ -42,25 +42,25 @@ public class PageInfo {
         return offset;
     }
 
-    public long getTotalRecords() {
-        return totalRecords;
+    public long getTotalElements() {
+        return totalElements;
     }
 
-    public void setTotalRecords(long totalRecords) {
-        this.totalRecords = totalRecords;
-        this.totalPages = (int)(totalRecords / size);
+    public void setTotalElements(long totalElements) {
+        this.totalElements = totalElements;
+        this.totalPages = (int)(totalElements / size);
     }
 
-    public void setTotalRecords(int actualPageSize, LongSupplier totalSupplier) {
+    public void setTotalElements(int actualPageSize, LongSupplier totalSupplier) {
         Assert.notNull(totalSupplier, "TotalSupplier must not be null");
         if (isPartialPage(actualPageSize)) {
             if (isFirstPage()) {
-                setTotalRecords(actualPageSize);
+                setTotalElements(actualPageSize);
             } if (actualPageSize > 0) {
-                setTotalRecords(offset + actualPageSize);
+                setTotalElements(offset + actualPageSize);
             }
         } else {
-            setTotalRecords(totalSupplier.getAsLong());
+            setTotalElements(totalSupplier.getAsLong());
         }
     }
 
@@ -68,20 +68,20 @@ public class PageInfo {
         return totalPages;
     }
 
-    public boolean isPartialPage(int actualSize) {
-        return actualSize < size;
+    public boolean isPartialPage(int actualPageSize) {
+        return (actualPageSize < size);
     }
 
     public boolean isFirstPage() {
-        return number == 1;
+        return (number == 1);
     }
 
     public boolean isLastPage() {
-        return number == totalPages;
+        return (number == totalPages);
     }
 
     public boolean hasPreviousPage() {
-        return number > 1;
+        return (number > 1);
     }
 
     @NonNull

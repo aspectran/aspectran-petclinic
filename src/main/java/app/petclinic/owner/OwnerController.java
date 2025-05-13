@@ -15,13 +15,10 @@
  */
 package app.petclinic.owner;
 
-import java.util.List;
-
 import app.petclinic.common.pagination.PageInfo;
 import app.petclinic.common.validation.BindingErrors;
 import app.petclinic.common.validation.SimpleValidator;
 import com.aspectran.core.activity.Translet;
-import com.aspectran.core.component.bean.annotation.Action;
 import com.aspectran.core.component.bean.annotation.Autowired;
 import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.component.bean.annotation.Dispatch;
@@ -30,18 +27,8 @@ import com.aspectran.core.component.bean.annotation.RequestToGet;
 import com.aspectran.core.component.bean.annotation.RequestToPost;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.web.support.http.HttpStatusSetter;
-import org.springframework.data.domain.Page;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 
-import jakarta.validation.Valid;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import java.util.List;
 
 /**
  * @author Juergen Hoeller
@@ -52,28 +39,14 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 @Component
 public class OwnerController {
 
-	private static final String VIEWS_OWNER_CREATE_OR_UPDATE_FORM = "owners/createOrUpdateOwnerForm";
-
     private final OwnerDao ownerDao;
 
     private final SimpleValidator validator;
-
-	private final OwnerDao owners;
 
 	@Autowired
     public OwnerController(OwnerDao ownerDao, SimpleValidator validator) {
         this.ownerDao = ownerDao;
         this.validator = validator;
-        this.owners = null;
-	}
-
-	@InitBinder
-	public void setAllowedFields(WebDataBinder dataBinder) {
-		dataBinder.setDisallowedFields("id");
-	}
-
-	private Owner findOwner(Integer ownerId) {
-		return ownerId == null ? new Owner() : ownerDao.findById(ownerId);
 	}
 
 	@RequestToGet("/owners/new")
@@ -101,24 +74,14 @@ public class OwnerController {
 
 	@Request("/owners/find")
     @Dispatch("owners/findOwners")
-	public void initFindForm(Translet translet, Integer ownerId) {
-        translet.setAttribute("owner", findOwner(ownerId));
+	public void initFindForm(@NonNull Translet translet, Integer ownerId) {
+        Owner owner = (ownerId == null ? new Owner() : ownerDao.findById(ownerId));
+        translet.setAttribute("owner", owner);
 	}
 
 	@Request("/owners")
-//    @Dispatch("owners/ownersList")
+    @Dispatch("owners/ownersList")
 	public void processFindForm(Translet translet, String lastName) {
-
-//        beanValidator.putError("lastName", "notFound");
-//        translet.setAttribute("owner", findOwner(0));
-//        translet.setAttribute("errors", beanValidator.getErrors());
-//        translet.dispatch("owners/findOwners");
-
-		// allow parameterless GET request for /owners to return all records
-//		if (owner.getLastName() == null) {
-//			owner.setLastName(""); // empty string signifies broadest possible search
-//		}
-//
 		// find owners by last name
         PageInfo pageInfo = PageInfo.of(translet, 5);
         List<Owner> listOwners = ownerDao.findByLastName(StringUtils.nullToEmpty(lastName), pageInfo);
@@ -142,54 +105,40 @@ public class OwnerController {
         // multiple owners found
         translet.setAttribute("listOwners", listOwners);
         translet.setAttribute("page", pageInfo);
-        translet.dispatch("owners/ownersList");
 	}
 
-//	private String addPaginationModel(int page, Model model, Page<Owner> paginated) {
-//		List<Owner> listOwners = paginated.getContent();
-//		model.addAttribute("currentPage", page);
-//		model.addAttribute("totalPages", paginated.getTotalPages());
-//		model.addAttribute("totalItems", paginated.getTotalElements());
-//		model.addAttribute("listOwners", listOwners);
-//		return "owners/ownersList";
-//	}
-
-//	private Page<Owner> findPaginatedForOwnersLastName(PageInfo pageInfo, String lastname) {
-//		return owners.findByLastName(lastname, pageInfo);
-//	}
-
-	@GetMapping("/owners/{ownerId}/edit")
-	public String initUpdateOwnerForm(@PathVariable("ownerId") int ownerId, Model model) {
-		Owner owner = this.owners.findById(ownerId);
-		model.addAttribute(owner);
-		return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
+    @Request("/owners/${ownerId}/edit")
+    @Dispatch("owners/createOrUpdateOwnerForm")
+	public void initUpdateOwnerForm(@NonNull Translet translet, int ownerId) {
+        showOwner(translet, ownerId);
 	}
 
-	@PostMapping("/owners/{ownerId}/edit")
-	public String processUpdateOwnerForm(@Valid Owner owner, BindingResult result, @PathVariable("ownerId") int ownerId,
-			RedirectAttributes redirectAttributes) {
-		if (result.hasErrors()) {
-			redirectAttributes.addFlashAttribute("error", "There was an error in updating the owner.");
-			return VIEWS_OWNER_CREATE_OR_UPDATE_FORM;
-		}
+    @RequestToPost("/owners/${ownerId}/edit")
+	public void processUpdateOwnerForm(@NonNull Translet translet, Owner owner, int ownerId) {
+        BindingErrors bindingErrors = validator.validate(owner);
+        if (bindingErrors.hasErrors()) {
+            translet.setAttribute("errors", bindingErrors.getErrors());
+            translet.setAttribute("owner", owner);
+            translet.getOutputFlashMap().put("error", "There was an error in updating the owner.");
+            translet.dispatch("owners/createOrUpdateOwnerForm");
+            return;
+        }
 
-		owner.setId(ownerId);
-		this.owners.save(owner);
-		redirectAttributes.addFlashAttribute("message", "Owner Values Updated");
-		return "redirect:/owners/{ownerId}";
+        owner.setId(ownerId);
+        ownerDao.save(owner);
+        translet.getOutputFlashMap().put("message", "Owner Values Updated");
+        translet.redirect("/owners/" + ownerId);
 	}
 
 	/**
 	 * Custom handler for displaying an owner.
 	 * @param ownerId the ID of the owner to display
-	 * @return a ModelMap with the model attributes for the view
 	 */
-	@Request("/owners/{ownerId}")
+	@Request("/owners/${ownerId}")
     @Dispatch("owners/ownerDetails")
-    @Action("owner")
-	public Owner showOwner(int ownerId) {
-//		Owner owner = this.owners.findById(ownerId);
-		return new Owner();
+	public void showOwner(@NonNull Translet translet, int ownerId) {
+        Owner owner = ownerDao.findById(ownerId);
+        translet.setAttribute("owner", owner);
 	}
 
 }

@@ -45,7 +45,7 @@ public class VetController {
     @Dispatch("vets/vetList")
 	public void vetList(@NonNull Translet translet) {
         PageInfo pageInfo = PageInfo.of(translet);
-        List<Vet> listVets = vetDao.getVetList(pageInfo);
+        List<Vet> listVets = vetDao.findAll(pageInfo);
 
         translet.setAttribute("listVets", listVets);
         translet.setAttribute("page", pageInfo);

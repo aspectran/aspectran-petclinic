@@ -1,57 +1,54 @@
 <!DOCTYPE html>
-
 <html xmlns:th="https://www.thymeleaf.org"
       th:replace="~{fragments/layout :: layout (~{::body},'vets')}">
-
 <body>
 
 <h2>Veterinarians</h2>
 
 <table id="vets" class="table table-striped">
-  <thead>
-  <tr>
-    <th>Name</th>
-    <th>Specialties</th>
-  </tr>
-  </thead>
-  <tbody>
-  <tr th:each="vet : ${listVets}">
-    <td th:text="${vet.firstName + ' ' + vet.lastName}"></td>
-    <td><span th:each="specialty : ${vet.specialties}"
-              th:text="${specialty.name + ' '}"/> <span
-      th:if="${vet.nrOfSpecialties == 0}">none</span></td>
-  </tr>
-  </tbody>
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Specialties</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="vet : ${listVets}">
+        <td th:text="${vet.firstName + ' ' + vet.lastName}"></td>
+        <td><span th:each="specialty : ${vet.specialties}"
+                  th:text="${specialty.name + ' '}"/> <span
+                th:if="${vet.nrOfSpecialties == 0}">none</span></td>
+    </tr>
+    </tbody>
 </table>
 
 <div th:if="${page.totalPages > 1}">
-  <span>Pages:</span>
-  <span>[</span>
-  <span th:each="i: ${#numbers.sequence(1, page.totalPages)}">
-      <a th:if="${page.number != i}" th:href="@{'/vets.html?page=__${i}__'}">[[${i}]]</a>
-      <span th:unless="${page.number != i}">[[${i}]]</span>
-    </span>
-  <span>]&nbsp;</span>
   <span>
-      <a th:if="${page.number > 1}" th:href="@{'/vets.html?page=1'}" title="First"
-         class="fa fa-fast-backward"></a>
+    <a th:if="${page.number > 1}" th:href="@{'/vets.html?page=1'}" title="First" class="fa fa-fast-backward"></a>
       <span th:unless="${page.number > 1}" title="First" class="fa fa-fast-backward"></span>
     </span>
-  <span>
+    <span>
       <a th:if="${page.number > 1}" th:href="@{'/vets.html?page=__${page.number - 1}__'}" title="Previous"
          class="fa fa-step-backward"></a>
       <span th:unless="${page.number > 1}" title="Previous" class="fa fa-step-backward"></span>
     </span>
-  <span>
+    <span th:each="i: ${#numbers.sequence(page.number - (page.number + 1) % 2, page.number - (page.number + 1) % 2 + 1)}">
+      <a th:if="${page.number != i && i <= page.totalElements / 2}" th:href="@{'/vets.html?page=__${i}__'}" th:text="${i}"></a>
+      <span th:unless="${page.number != i}" th:text="${i}"></span>
+    </span>
+    <span>
       <a th:if="${page.number < page.totalPages}" th:href="@{'/vets.html?page=__${page.number + 1}__'}" title="Next"
          class="fa fa-step-forward"></a>
       <span th:unless="${page.number < page.totalPages}" title="Next" class="fa fa-step-forward"></span>
     </span>
-  <span>
+    <span>
       <a th:if="${page.number < page.totalPages}" th:href="@{'/vets.html?page=__${page.totalPages}__'}" title="Last"
          class="fa fa-fast-forward"></a>
       <span th:unless="${page.number < page.totalPages}" title="Last" class="fa fa-fast-forward"></span>
     </span>
+    <span>Total:</span>
+    <span th:text="${page.totalElements}"></span>
 </div>
+
 </body>
 </html>

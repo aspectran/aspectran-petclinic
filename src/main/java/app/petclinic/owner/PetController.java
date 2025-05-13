@@ -15,148 +15,142 @@
  */
 package app.petclinic.owner;
 
+import app.petclinic.common.validation.BindingErrors;
+import com.aspectran.core.activity.Translet;
+import com.aspectran.core.component.bean.annotation.Autowired;
+import com.aspectran.core.component.bean.annotation.Component;
+import com.aspectran.core.component.bean.annotation.Dispatch;
+import com.aspectran.core.component.bean.annotation.Redirect;
+import com.aspectran.core.component.bean.annotation.RequestToGet;
+import com.aspectran.core.component.bean.annotation.RequestToPost;
+import com.aspectran.core.component.bean.annotation.Required;
+import com.aspectran.utils.annotation.jsr305.NonNull;
+import org.springframework.util.StringUtils;
+
 import java.time.LocalDate;
 import java.util.Collection;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.ModelMap;
-import org.springframework.util.StringUtils;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import jakarta.validation.Valid;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  * @author Juergen Hoeller
  * @author Ken Krebs
  * @author Arjen Poutsma
  */
-@Controller
-@RequestMapping("/owners/{ownerId}")
-class PetController {
+@Component("/owners/${ownerId}")
+public class PetController {
 
-	private static final String VIEWS_PETS_CREATE_OR_UPDATE_FORM = "pets/createOrUpdatePetForm";
+    private final OwnerDao ownerDao;
 
-	private final OwnerDao owners;
+    private final PetValidator validator;
 
-	public PetController(OwnerDao owners) {
-		this.owners = owners;
+	@Autowired
+    public PetController(OwnerDao ownerDao, PetValidator validator) {
+        this.ownerDao = ownerDao;
+        this.validator = validator;
 	}
 
-	@ModelAttribute("types")
-	public Collection<PetType> populatePetTypes() {
-		return this.owners.findPetTypes();
-	}
-
-	@ModelAttribute("owner")
-	public Owner findOwner(@PathVariable("ownerId") int ownerId) {
-
-		Owner owner = this.owners.findById(ownerId);
-		if (owner == null) {
-			throw new IllegalArgumentException("Owner ID not found: " + ownerId);
-		}
-		return owner;
-	}
-
-	@ModelAttribute("pet")
-	public Pet findPet(@PathVariable("ownerId") int ownerId,
-			@PathVariable(name = "petId", required = false) Integer petId) {
-
-		if (petId == null) {
-			return new Pet();
-		}
-
-		Owner owner = this.owners.findById(ownerId);
-		if (owner == null) {
-			throw new IllegalArgumentException("Owner ID not found: " + ownerId);
-		}
-		return owner.getPet(petId);
-	}
-
-	@InitBinder("owner")
-	public void initOwnerBinder(WebDataBinder dataBinder) {
-		dataBinder.setDisallowedFields("id");
-	}
-
-	@InitBinder("pet")
-	public void initPetBinder(WebDataBinder dataBinder) {
-		dataBinder.setValidator(new PetValidator());
-	}
-
-	@GetMapping("/pets/new")
-	public String initCreationForm(Owner owner, ModelMap model) {
+	@RequestToGet("/pets/new")
+    @Dispatch("/owners/${ownerId}/pets/createOrUpdatePetForm")
+	public void initCreationForm(@NonNull Translet translet, @Required int ownerId) {
+        Owner owner = findOwner(ownerId);
 		Pet pet = new Pet();
 		owner.addPet(pet);
-		model.put("pet", pet);
-		return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
+
+        translet.setAttribute("types", populatePetTypes());
+        translet.setAttribute("owner", owner);
+        translet.setAttribute("pet", pet);
 	}
 
-	@PostMapping("/pets/new")
-	public String processCreationForm(Owner owner, @Valid Pet pet, BindingResult result, ModelMap model,
-			RedirectAttributes redirectAttributes) {
+	@RequestToPost("/pets/new")
+    @Redirect("/owners/${ownerId}")
+	public void processCreationForm(@NonNull Translet translet, @Required int ownerId, Pet pet) {
+        Owner owner = findOwner(ownerId);
+
+        BindingErrors bindingErrors = validator.validate(translet, pet);
 		if (StringUtils.hasText(pet.getName()) && pet.isNew() && owner.getPet(pet.getName(), true) != null) {
-			result.rejectValue("name", "duplicate", "already exists");
+            bindingErrors.putError("name", translet.getMessage("duplicate", "already exists"));
 		}
 
 		LocalDate currentDate = LocalDate.now();
 		if (pet.getBirthDate() != null && pet.getBirthDate().isAfter(currentDate)) {
-			result.rejectValue("birthDate", "typeMismatch.birthDate");
+            bindingErrors.putError("birthDate", translet.getMessage("typeMismatch.birthDate"));
 		}
 
-		owner.addPet(pet);
-		if (result.hasErrors()) {
-			model.put("pet", pet);
-			return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
-		}
+        if (bindingErrors.hasErrors()) {
+            translet.setAttribute("types", populatePetTypes());
+            translet.setAttribute("owner", owner);
+            translet.setAttribute("pet", pet);
+            translet.dispatch("/owners/${ownerId}/pets/createOrUpdatePetForm");
+            return;
+        }
 
-		this.owners.save(owner);
-		redirectAttributes.addFlashAttribute("message", "New Pet has been Added");
-		return "redirect:/owners/{ownerId}";
+        owner.addPet(pet);
+        ownerDao.save(owner);
+
+        translet.getOutputFlashMap().put("message", "New Pet has been Added");
 	}
 
-	@GetMapping("/pets/{petId}/edit")
-	public String initUpdateForm(Owner owner, @PathVariable("petId") int petId, ModelMap model,
-			RedirectAttributes redirectAttributes) {
-		Pet pet = owner.getPet(petId);
-		model.put("pet", pet);
-		return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
+	@RequestToGet("/pets/${petId}/edit")
+    @Dispatch("/owners/${ownerId}/pets/createOrUpdatePetForm")
+	public void initUpdateForm(@NonNull Translet translet, @Required int ownerId, @Required int petId) {
+        Pet pet = findPet(ownerId, petId);
+        translet.setAttribute("pet", pet);
 	}
 
-	@PostMapping("/pets/{petId}/edit")
-	public String processUpdateForm(@Valid Pet pet, BindingResult result, Owner owner, ModelMap model,
-			RedirectAttributes redirectAttributes) {
+	@RequestToPost("/pets/${petId}/edit")
+    @Redirect("/owners/${ownerId}")
+	public void processUpdateForm(@NonNull Translet translet, @Required int ownerId, @Required int petId, Pet pet) {
+        Owner owner = findOwner(ownerId);
+        BindingErrors bindingErrors = validator.validate(translet, pet);
 
-		String petName = pet.getName();
-
+        String petName = pet.getName();
 		// checking if the pet name already exist for the owner
 		if (StringUtils.hasText(petName)) {
 			Pet existingPet = owner.getPet(petName.toLowerCase(), false);
 			if (existingPet != null && existingPet.getId() != pet.getId()) {
-				result.rejectValue("name", "duplicate", "already exists");
+                bindingErrors.putError("name", translet.getMessage("duplicate", "already exists"));
 			}
 		}
 
 		LocalDate currentDate = LocalDate.now();
 		if (pet.getBirthDate() != null && pet.getBirthDate().isAfter(currentDate)) {
-			result.rejectValue("birthDate", "typeMismatch.birthDate");
+            bindingErrors.putError("birthDate", translet.getMessage("typeMismatch.birthDate"));
 		}
 
-		if (result.hasErrors()) {
-			model.put("pet", pet);
-			return VIEWS_PETS_CREATE_OR_UPDATE_FORM;
+		if (bindingErrors.hasErrors()) {
+            translet.setAttribute("pet", pet);
+            translet.dispatch("/owners/${ownerId}/pets/createOrUpdatePetForm");
+            return;
 		}
 
 		owner.addPet(pet);
-		this.owners.save(owner);
-		redirectAttributes.addFlashAttribute("message", "Pet details has been edited");
-		return "redirect:/owners/{ownerId}";
+		ownerDao.save(owner);
+
+        translet.getOutputFlashMap().put("message", "Pet details has been edited");
 	}
+
+    private Collection<PetType> populatePetTypes() {
+        return ownerDao.findPetTypes();
+    }
+
+    @NonNull
+    private Owner findOwner(int ownerId) {
+        Owner owner = ownerDao.findById(ownerId);
+        if (owner == null) {
+            throw new IllegalArgumentException("Owner ID not found: " + ownerId);
+        }
+        return owner;
+    }
+
+    private Pet findPet(int ownerId, Integer petId) {
+        if (petId == null) {
+            return new Pet();
+        }
+
+        Owner owner = ownerDao.findById(ownerId);
+        if (owner == null) {
+            throw new IllegalArgumentException("Owner ID not found: " + ownerId);
+        }
+        return owner.getPet(petId);
+    }
 
 }

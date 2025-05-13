@@ -6,7 +6,7 @@ import app.petclinic.common.pagination.PageInfo;
 import com.aspectran.core.component.bean.annotation.Autowired;
 import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.core.Fetchable;
 
 import java.util.List;
 
@@ -35,7 +35,7 @@ public class VetDao {
         return entityQuery.find(Vet.class, id);
     }
 
-    public List<Vet> getVetList(@NonNull PageInfo pageInfo) {
+    public List<Vet> findAll(@NonNull PageInfo pageInfo) {
         QVet vet = QVet.vet;
         List<Vet> listVets = entityQuery
                 .selectFrom(vet)
@@ -43,11 +43,11 @@ public class VetDao {
                 .limit(pageInfo.getSize())
                 .fetch();
 
-        JPAQuery<Long> countQuery = entityQuery
+        Fetchable<Long> countQuery = entityQuery
                 .select(vet.count())
                 .from(vet);
 
-        pageInfo.setTotalRecords(listVets.size(), countQuery::fetchOne);
+        pageInfo.setTotalElements(listVets.size(), countQuery::fetchOne);
         return listVets;
     }
 

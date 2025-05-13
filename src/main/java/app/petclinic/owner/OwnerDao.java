@@ -21,7 +21,7 @@ import app.petclinic.common.pagination.PageInfo;
 import com.aspectran.core.component.bean.annotation.Autowired;
 import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.core.Fetchable;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
@@ -81,11 +81,11 @@ public class OwnerDao {
                 .limit(pageInfo.getSize())
                 .fetch();
 
-        JPAQuery<Long> countQuery = entityQuery
+        Fetchable<Long> countQuery = entityQuery
                 .select(owner.count())
                 .from(owner);
 
-        pageInfo.setTotalRecords(listOwners.size(), countQuery::fetchOne);
+        pageInfo.setTotalElements(listOwners.size(), countQuery::fetchOne);
         return listOwners;
     }
 
@@ -96,7 +96,7 @@ public class OwnerDao {
 	 */
 //	@Query("SELECT owner FROM Owner owner left join fetch owner.pets WHERE owner.id =:id")
 //	@Transactional(readOnly = true)
-	public Owner findById(@Param("id") Integer id) {
+	public Owner findById(int id) {
         QOwner owner = QOwner.owner;
         return entityQuery
                 .selectFrom(owner)
@@ -109,8 +109,12 @@ public class OwnerDao {
 	 * Save an {@link Owner} to the data store, either inserting or updating it.
 	 * @param owner the {@link Owner} to save
 	 */
-	public void save(Owner owner) {
-        entityQuery.persist(owner);
+	public void save(@NonNull Owner owner) {
+        if (owner.isNew()) {
+            entityQuery.persist(owner);
+        } else {
+            entityQuery.merge(owner);
+        }
     }
 
 	/**
@@ -127,11 +131,11 @@ public class OwnerDao {
                 .limit(pageInfo.getSize())
                 .fetch();
 
-        JPAQuery<Long> countQuery = entityQuery
+        Fetchable<Long> countQuery = entityQuery
                 .select(owner.count())
                 .from(owner);
 
-        pageInfo.setTotalRecords(listOwners.size(), countQuery::fetchOne);
+        pageInfo.setTotalElements(listOwners.size(), countQuery::fetchOne);
         return listOwners;
     }
 

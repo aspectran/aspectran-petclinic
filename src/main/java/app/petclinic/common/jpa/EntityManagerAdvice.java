@@ -32,22 +32,6 @@ public class EntityManagerAdvice {
         }
     }
 
-//    public void flush() {
-//        if (checkOpen()) {
-//            return;
-//        }
-//        if (entityManager.isJoinedToTransaction()) {
-//            entityManager.flush();
-//        }
-//    }
-//
-//    public void clear() {
-//        if (checkOpen()) {
-//            return;
-//        }
-//        entityManager.clear();
-//    }
-
     public void close() {
         if (entityManager != null) {
             rollbackTransaction();
@@ -101,6 +85,7 @@ public class EntityManagerAdvice {
             if (transaction.isActive()) {
                 transaction.rollback();
             }
+            transactional = false;
         }
     }
 
