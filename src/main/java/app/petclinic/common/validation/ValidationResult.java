@@ -6,7 +6,7 @@ import java.util.Map;
 /**
  * <p>Created: 2025-05-12</p>
  */
-public class BindingErrors {
+public class ValidationResult {
 
     private Map<String, String> errors;
 

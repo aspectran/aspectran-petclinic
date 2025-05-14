@@ -16,8 +16,8 @@
 package app.petclinic.owner;
 
 import app.petclinic.common.pagination.PageInfo;
-import app.petclinic.common.validation.BindingErrors;
-import app.petclinic.common.validation.SimpleValidator;
+import app.petclinic.common.validation.ValidationResult;
+import app.petclinic.common.validation.DefaultValidator;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.component.bean.annotation.Autowired;
 import com.aspectran.core.component.bean.annotation.Component;
@@ -41,10 +41,10 @@ public class OwnerController {
 
     private final OwnerDao ownerDao;
 
-    private final SimpleValidator validator;
+    private final DefaultValidator validator;
 
 	@Autowired
-    public OwnerController(OwnerDao ownerDao, SimpleValidator validator) {
+    public OwnerController(OwnerDao ownerDao, DefaultValidator validator) {
         this.ownerDao = ownerDao;
         this.validator = validator;
 	}
@@ -58,9 +58,9 @@ public class OwnerController {
 
 	@RequestToPost("/owners/new")
 	public void processCreationForm(@NonNull Translet translet, Owner owner) {
-        BindingErrors bindingErrors = validator.validate(owner);
-        if (bindingErrors.hasErrors()) {
-            translet.setAttribute("errors", bindingErrors.getErrors());
+        ValidationResult validationResult = validator.validate(owner);
+        if (validationResult.hasErrors()) {
+            translet.setAttribute("errors", validationResult.getErrors());
             translet.setAttribute("owner", owner);
             translet.getOutputFlashMap().put("error", "There was an error in creating the owner.");
             translet.dispatch("owners/createOrUpdateOwnerForm");
@@ -87,9 +87,9 @@ public class OwnerController {
         List<Owner> listOwners = ownerDao.findByLastName(StringUtils.nullToEmpty(lastName), pageInfo);
 		if (listOwners.isEmpty()) {
 			// no owners found
-            BindingErrors bindingErrors = new BindingErrors();
-            bindingErrors.putError("lastName", "notFound");
-            translet.setAttribute("errors", bindingErrors.getErrors());
+            ValidationResult result = new ValidationResult();
+            result.putError("lastName", "notFound");
+            translet.setAttribute("errors", result.getErrors());
             translet.setAttribute("owner", new Owner());
             translet.dispatch("owners/findOwners");
 			return;
@@ -115,17 +115,19 @@ public class OwnerController {
 
     @RequestToPost("/owners/${ownerId}/edit")
 	public void processUpdateOwnerForm(@NonNull Translet translet, Owner owner, int ownerId) {
-        BindingErrors bindingErrors = validator.validate(owner);
-        if (bindingErrors.hasErrors()) {
-            translet.setAttribute("errors", bindingErrors.getErrors());
+        ValidationResult result = validator.validate(owner);
+        if (result.hasErrors()) {
+            translet.setAttribute("errors", result.getErrors());
             translet.setAttribute("owner", owner);
             translet.getOutputFlashMap().put("error", "There was an error in updating the owner.");
             translet.dispatch("owners/createOrUpdateOwnerForm");
             return;
         }
 
-        owner.setId(ownerId);
-        ownerDao.save(owner);
+        Owner existingOwner = findOwner(ownerId);
+        existingOwner.updateOwner(owner);
+        ownerDao.save(existingOwner);
+
         translet.getOutputFlashMap().put("message", "Owner Values Updated");
         translet.redirect("/owners/" + ownerId);
 	}
@@ -140,5 +142,14 @@ public class OwnerController {
         Owner owner = ownerDao.findById(ownerId);
         translet.setAttribute("owner", owner);
 	}
+
+    @NonNull
+    private Owner findOwner(int ownerId) {
+        Owner owner = ownerDao.findById(ownerId);
+        if (owner == null) {
+            throw new IllegalArgumentException("Owner ID not found: " + ownerId);
+        }
+        return owner;
+    }
 
 }

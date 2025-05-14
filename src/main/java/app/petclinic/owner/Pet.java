@@ -20,6 +20,9 @@ import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import com.aspectran.utils.annotation.jsr305.NonNull;
+import jakarta.persistence.Transient;
+import jakarta.persistence.criteria.CriteriaBuilder;
 import org.springframework.format.annotation.DateTimeFormat;
 import app.petclinic.model.NamedEntity;
 
@@ -52,6 +55,9 @@ public class Pet extends NamedEntity {
 	@JoinColumn(name = "type_id")
 	private PetType type;
 
+    @Transient
+    private Integer typeId;
+
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinColumn(name = "pet_id")
 	@OrderBy("visit_date ASC")
@@ -73,6 +79,14 @@ public class Pet extends NamedEntity {
 		this.type = type;
 	}
 
+    public Integer getTypeId() {
+        return typeId;
+    }
+
+	public void setTypeId(Integer typeId) {
+		this.typeId = typeId;
+	}
+
 	public Collection<Visit> getVisits() {
 		return this.visits;
 	}
@@ -80,5 +94,11 @@ public class Pet extends NamedEntity {
 	public void addVisit(Visit visit) {
 		getVisits().add(visit);
 	}
+
+    public void updatePet(@NonNull Pet pet) {
+        this.setName(pet.getName());
+        this.setBirthDate(pet.getBirthDate());
+        this.setType(pet.getType());
+    }
 
 }

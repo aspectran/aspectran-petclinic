@@ -15,7 +15,8 @@
  */
 package app.petclinic.owner;
 
-import app.petclinic.common.validation.BindingErrors;
+import app.petclinic.common.validation.CustomValidator;
+import app.petclinic.common.validation.ValidationResult;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.component.bean.annotation.Bean;
 import com.aspectran.core.component.bean.annotation.Component;
@@ -34,30 +35,27 @@ import org.springframework.util.StringUtils;
  */
 @Component
 @Bean
-public class PetValidator {
+public class PetValidator extends CustomValidator<Pet> {
 
 	private static final String REQUIRED = "required";
 
-	public BindingErrors validate(@NonNull Translet translet, @NonNull Pet pet) {
-        BindingErrors bindingErrors = new BindingErrors();
-
+	@Override
+    public void validate(@NonNull Translet translet, @NonNull Pet pet, ValidationResult result) {
 		String name = pet.getName();
 		// name validation
 		if (!StringUtils.hasText(name)) {
-            bindingErrors.putError("name", translet.getMessage(REQUIRED, REQUIRED));
+            result.putError("name", translet.getMessage(REQUIRED, REQUIRED));
 		}
 
 		// type validation
 		if (pet.isNew() && pet.getType() == null) {
-            bindingErrors.putError("type", translet.getMessage(REQUIRED, REQUIRED));
+            result.putError("type", translet.getMessage(REQUIRED, REQUIRED));
 		}
 
 		// birth date validation
 		if (pet.getBirthDate() == null) {
-            bindingErrors.putError("birthDate", translet.getMessage(REQUIRED, REQUIRED));
+            result.putError("birthDate", translet.getMessage(REQUIRED, REQUIRED));
 		}
-
-        return bindingErrors;
 	}
 
 }

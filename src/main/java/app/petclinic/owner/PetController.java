@@ -15,7 +15,7 @@
  */
 package app.petclinic.owner;
 
-import app.petclinic.common.validation.BindingErrors;
+import app.petclinic.common.validation.ValidationResult;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.component.bean.annotation.Autowired;
 import com.aspectran.core.component.bean.annotation.Component;
@@ -49,37 +49,44 @@ public class PetController {
 	}
 
 	@RequestToGet("/pets/new")
-    @Dispatch("/owners/${ownerId}/pets/createOrUpdatePetForm")
+    @Dispatch("pets/createOrUpdatePetForm")
 	public void initCreationForm(@NonNull Translet translet, @Required int ownerId) {
         Owner owner = findOwner(ownerId);
 		Pet pet = new Pet();
 		owner.addPet(pet);
 
-        translet.setAttribute("types", populatePetTypes());
         translet.setAttribute("owner", owner);
         translet.setAttribute("pet", pet);
-	}
+        translet.setAttribute("types", populatePetTypes());
+    }
 
 	@RequestToPost("/pets/new")
     @Redirect("/owners/${ownerId}")
 	public void processCreationForm(@NonNull Translet translet, @Required int ownerId, Pet pet) {
         Owner owner = findOwner(ownerId);
 
-        BindingErrors bindingErrors = validator.validate(translet, pet);
+        ValidationResult result = validator.validate(translet, pet);
 		if (StringUtils.hasText(pet.getName()) && pet.isNew() && owner.getPet(pet.getName(), true) != null) {
-            bindingErrors.putError("name", translet.getMessage("duplicate", "already exists"));
+            result.putError("name", translet.getMessage("duplicate", "already exists"));
 		}
 
 		LocalDate currentDate = LocalDate.now();
 		if (pet.getBirthDate() != null && pet.getBirthDate().isAfter(currentDate)) {
-            bindingErrors.putError("birthDate", translet.getMessage("typeMismatch.birthDate"));
+            result.putError("birthDate", translet.getMessage("typeMismatch.birthDate"));
 		}
 
-        if (bindingErrors.hasErrors()) {
-            translet.setAttribute("types", populatePetTypes());
+        PetType petType = findPetTypeById(pet.getTypeId());
+        if (petType == null) {
+            result.putError("typeId", translet.getMessage("required"));
+        } else {
+            pet.setType(petType);
+        }
+
+        if (result.hasErrors()) {
             translet.setAttribute("owner", owner);
             translet.setAttribute("pet", pet);
-            translet.dispatch("/owners/${ownerId}/pets/createOrUpdatePetForm");
+            translet.setAttribute("types", populatePetTypes());
+            translet.dispatch("pets/createOrUpdatePetForm");
             return;
         }
 
@@ -90,39 +97,51 @@ public class PetController {
 	}
 
 	@RequestToGet("/pets/${petId}/edit")
-    @Dispatch("/owners/${ownerId}/pets/createOrUpdatePetForm")
+    @Dispatch("pets/createOrUpdatePetForm")
 	public void initUpdateForm(@NonNull Translet translet, @Required int ownerId, @Required int petId) {
-        Pet pet = findPet(ownerId, petId);
+        Owner owner = findOwner(ownerId, petId);
+        Pet pet = owner.getPet(petId);
+        translet.setAttribute("owner", owner);
         translet.setAttribute("pet", pet);
-	}
+        translet.setAttribute("types", populatePetTypes());
+    }
 
 	@RequestToPost("/pets/${petId}/edit")
     @Redirect("/owners/${ownerId}")
 	public void processUpdateForm(@NonNull Translet translet, @Required int ownerId, @Required int petId, Pet pet) {
         Owner owner = findOwner(ownerId);
-        BindingErrors bindingErrors = validator.validate(translet, pet);
+        ValidationResult result = validator.validate(translet, pet);
 
         String petName = pet.getName();
 		// checking if the pet name already exist for the owner
 		if (StringUtils.hasText(petName)) {
-			Pet existingPet = owner.getPet(petName.toLowerCase(), false);
+			Pet existingPet = owner.getPet(petName, false);
 			if (existingPet != null && existingPet.getId() != pet.getId()) {
-                bindingErrors.putError("name", translet.getMessage("duplicate", "already exists"));
+                result.putError("name", translet.getMessage("duplicate", "already exists"));
 			}
 		}
 
 		LocalDate currentDate = LocalDate.now();
 		if (pet.getBirthDate() != null && pet.getBirthDate().isAfter(currentDate)) {
-            bindingErrors.putError("birthDate", translet.getMessage("typeMismatch.birthDate"));
+            result.putError("birthDate", translet.getMessage("typeMismatch.birthDate"));
 		}
 
-		if (bindingErrors.hasErrors()) {
+        PetType petType = findPetTypeById(pet.getTypeId());
+        if (petType == null) {
+            result.putError("typeId", translet.getMessage("required"));
+        } else {
+            pet.setType(petType);
+        }
+
+        if (result.hasErrors()) {
             translet.setAttribute("pet", pet);
-            translet.dispatch("/owners/${ownerId}/pets/createOrUpdatePetForm");
+            translet.dispatch("pets/createOrUpdatePetForm");
             return;
 		}
 
-		owner.addPet(pet);
+        Pet existingPet = owner.getPet(petId);
+        existingPet.updatePet(pet);
+        owner.addPet(existingPet);
 		ownerDao.save(owner);
 
         translet.getOutputFlashMap().put("message", "Pet details has been edited");
@@ -141,16 +160,29 @@ public class PetController {
         return owner;
     }
 
-    private Pet findPet(int ownerId, Integer petId) {
-        if (petId == null) {
-            return new Pet();
-        }
-
-        Owner owner = ownerDao.findById(ownerId);
+    @NonNull
+    private Owner findOwner(int ownerId, int petId) {
+        Owner owner = ownerDao.findById(ownerId, petId);
         if (owner == null) {
             throw new IllegalArgumentException("Owner ID not found: " + ownerId);
         }
-        return owner.getPet(petId);
+        if (owner.getPet(petId) == null) {
+            throw new IllegalArgumentException("Pet ID not found: " + petId);
+        }
+        return owner;
+    }
+
+    private PetType findPetTypeById(Integer petTypeId) {
+        if (petTypeId == null) {
+            return null;
+        }
+        Collection<PetType> findPetTypes = populatePetTypes();
+        for (PetType type : findPetTypes) {
+            if (type.getId() == petTypeId) {
+                return type;
+            }
+        }
+        return null;
     }
 
 }

@@ -26,28 +26,28 @@ import java.util.Set;
 
 @Component
 @Bean
-public class SimpleValidator {
+public class DefaultValidator {
 
     private final Validator validator;
 
     @Autowired
-    public SimpleValidator(Validator validator) {
+    public DefaultValidator(Validator validator) {
         this.validator = validator;
     }
 
-    public <T> BindingErrors validate(T model) {
+    public <T> ValidationResult validate(T model) {
         return validate(model, Default.class);
     }
 
-    public <T> BindingErrors validate(T model, Class<?> group) {
-        BindingErrors bindingErrors = new BindingErrors();
+    public <T> ValidationResult validate(T model, Class<?> group) {
+        ValidationResult result = new ValidationResult();
         Set<ConstraintViolation<T>> violations = validator.validate(model, group);
         if (!violations.isEmpty()) {
             for (ConstraintViolation<T> violation : violations) {
-                bindingErrors.putError(violation.getPropertyPath().toString(), violation.getMessage());
+                result.putError(violation.getPropertyPath().toString(), violation.getMessage());
             }
         }
-        return bindingErrors;
+        return result;
     }
 
 }

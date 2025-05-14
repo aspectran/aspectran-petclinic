@@ -106,6 +106,22 @@ public class OwnerDao {
     }
 
 	/**
+	 * Retrieve an {@link Owner} from the data store by id.
+	 * @param ownerId the id to search for
+	 * @return the {@link Owner} if found
+	 */
+//	@Query("SELECT owner FROM Owner owner left join fetch owner.pets WHERE owner.id =:id")
+//	@Transactional(readOnly = true)
+	public Owner findById(int ownerId, int petId) {
+        QOwner owner = QOwner.owner;
+        return entityQuery
+                .selectFrom(owner)
+                .leftJoin(owner.pets)
+                .where(owner.id.eq(ownerId).and(owner.pets.any().id.eq(petId)))
+                .fetchOne();
+    }
+
+	/**
 	 * Save an {@link Owner} to the data store, either inserting or updating it.
 	 * @param owner the {@link Owner} to save
 	 */
