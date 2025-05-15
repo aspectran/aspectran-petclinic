@@ -62,8 +62,12 @@ public class PetController {
 
 	@RequestToPost("/pets/new")
     @Redirect("/owners/${ownerId}")
-	public void processCreationForm(@NonNull Translet translet, @Required int ownerId, Pet pet) {
+	public void processCreationForm(@NonNull Translet translet, @Required int ownerId, @Required Pet pet) {
         Owner owner = findOwner(ownerId);
+        PetType petType = findPetTypeById(pet.getTypeId());
+        if (petType != null) {
+            pet.setType(petType);
+        }
 
         ValidationResult result = validator.validate(translet, pet);
 		if (StringUtils.hasText(pet.getName()) && pet.isNew() && owner.getPet(pet.getName(), true) != null) {
@@ -75,17 +79,11 @@ public class PetController {
             result.putError("birthDate", translet.getMessage("typeMismatch.birthDate"));
 		}
 
-        PetType petType = findPetTypeById(pet.getTypeId());
-        if (petType == null) {
-            result.putError("typeId", translet.getMessage("required"));
-        } else {
-            pet.setType(petType);
-        }
-
         if (result.hasErrors()) {
             translet.setAttribute("owner", owner);
             translet.setAttribute("pet", pet);
             translet.setAttribute("types", populatePetTypes());
+            translet.setAttribute("errors", result.getErrors());
             translet.dispatch("pets/createOrUpdatePetForm");
             return;
         }
@@ -176,9 +174,9 @@ public class PetController {
         if (petTypeId == null) {
             return null;
         }
-        Collection<PetType> findPetTypes = populatePetTypes();
-        for (PetType type : findPetTypes) {
-            if (type.getId() == petTypeId) {
+        Collection<PetType> petTypes = populatePetTypes();
+        for (PetType type : petTypes) {
+            if (type.getId().equals(petTypeId)) {
                 return type;
             }
         }

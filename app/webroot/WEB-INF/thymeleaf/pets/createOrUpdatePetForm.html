@@ -6,7 +6,7 @@
     <th:block th:if="${pet['new']}">New</th:block> Pet
 </h2>
 <form class="form-horizontal" method="post">
-    <input type="hidden" name="id" th:value="${pet.id}"/>
+    <input th:if="${pet.id != null}" type="hidden" name="id" th:value="${pet.id}"/>
     <div class="form-group has-feedback">
         <div class="form-group">
             <label class="col-sm-2 control-label">Owner</label>

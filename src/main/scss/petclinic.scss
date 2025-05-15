@@ -95,8 +95,6 @@ code {
 .xd-container {
   margin-top: 40px;
   margin-bottom: 100px;
-  padding-left: 5px;
-  padding-right: 5px;
 }
 
 h1 {
@@ -157,10 +155,6 @@ table td.action-column {
 
 .help-block {
   color: lighten($text-color, 50%); // lighten the text some for contrast
-}
-
-.xd-containers {
-  font-size: 15px;
 }
 
 .cluster-view > table td {

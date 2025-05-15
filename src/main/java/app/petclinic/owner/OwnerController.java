@@ -59,9 +59,9 @@ public class OwnerController {
 
 	@RequestToPost("/owners/new")
 	public void processCreationForm(@NonNull Translet translet, Owner owner) {
-        ValidationResult validationResult = validator.validate(owner);
-        if (validationResult.hasErrors()) {
-            translet.setAttribute("errors", validationResult.getErrors());
+        ValidationResult result = validator.validate(owner);
+        if (result.hasErrors()) {
+            translet.setAttribute("errors", result.getErrors());
             translet.setAttribute("owner", owner);
             translet.getOutputFlashMap().put("error", "There was an error in creating the owner.");
             translet.dispatch("owners/createOrUpdateOwnerForm");
