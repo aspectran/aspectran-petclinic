@@ -16,8 +16,8 @@
 package app.petclinic.owner;
 
 import app.petclinic.common.pagination.PageInfo;
-import app.petclinic.common.validation.ValidationResult;
 import app.petclinic.common.validation.DefaultValidator;
+import app.petclinic.common.validation.ValidationResult;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.component.bean.annotation.Autowired;
 import com.aspectran.core.component.bean.annotation.Component;
@@ -27,6 +27,7 @@ import com.aspectran.core.component.bean.annotation.RequestToGet;
 import com.aspectran.core.component.bean.annotation.RequestToPost;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
+import com.aspectran.web.support.http.HttpStatusSetter;
 
 import java.util.List;
 
@@ -140,6 +141,11 @@ public class OwnerController {
     @Dispatch("owners/ownerDetails")
 	public void showOwner(@NonNull Translet translet, int ownerId) {
         Owner owner = ownerDao.findById(ownerId);
+        if (owner == null) {
+            translet.setAttribute("error", "The owner with id " + ownerId + " doesn't exist.");
+            HttpStatusSetter.notFound(translet);
+            return;
+        }
         translet.setAttribute("owner", owner);
 	}
 
