@@ -33,7 +33,8 @@
       <span th:unless="${page.number > 1}" title="Previous" class="fa fa-step-backward"></span>
     </span>
     <span th:each="i: ${#numbers.sequence(page.number - (page.number + 1) % 2, page.number - (page.number + 1) % 2 + 1)}">
-      <a th:if="${page.number != i && i <= page.totalElements / 2}" th:href="@{'/vets.html?page=__${i}__'}" th:text="${i}"></a>
+      <a th:if="${page.number != i && i <= page.totalElements / 2}" th:href="@{'/vets.html?page=__${i}__'}"
+         th:text="${i}"></a>
       <span th:unless="${page.number != i}" th:text="${i}"></span>
     </span>
     <span>

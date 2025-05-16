@@ -9296,9 +9296,7 @@ code {
 
 .xd-container {
   margin-top: 40px;
-  margin-bottom: 100px;
-  padding-left: 5px;
-  padding-right: 5px; }
+  margin-bottom: 100px; }
 
 h1, .h1 {
   margin-bottom: 15px; }
@@ -9347,9 +9345,6 @@ table td.action-column {
 
 .help-block {
   color: #b6afaa; }
-
-.xd-containers {
-  font-size: 15px; }
 
 .cluster-view > table td {
   vertical-align: top; }
@@ -9432,7 +9427,9 @@ strong {
 .navbar {
   border-top: 4px solid #6db33f;
   background-color: #34302d;
-  margin-bottom: 0px;
+  margin-bottom: 0;
+  padding-top: 0;
+  padding-bottom: 0;
   border-bottom: 0;
   border-left: 0;
   border-right: 0; }
@@ -9491,11 +9488,6 @@ strong {
     height: 3px; }
 
 @media (max-width: 768px) {
-  .navbar-toggle {
-    position: absolute;
-    z-index: 9999;
-    left: 0px;
-    top: 0px; }
   .navbar a.navbar-brand {
     display: block;
     margin: 0 auto 0 auto;
