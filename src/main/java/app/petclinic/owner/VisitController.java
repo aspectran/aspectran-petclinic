@@ -15,19 +15,16 @@
  */
 package app.petclinic.owner;
 
-import java.util.Map;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.InitBinder;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-
-import jakarta.validation.Valid;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import app.petclinic.common.validation.DefaultValidator;
+import app.petclinic.common.validation.ValidationResult;
+import com.aspectran.core.activity.Translet;
+import com.aspectran.core.component.bean.annotation.Component;
+import com.aspectran.core.component.bean.annotation.Dispatch;
+import com.aspectran.core.component.bean.annotation.Redirect;
+import com.aspectran.core.component.bean.annotation.RequestToGet;
+import com.aspectran.core.component.bean.annotation.RequestToPost;
+import com.aspectran.core.component.bean.annotation.Required;
+import com.aspectran.utils.annotation.jsr305.NonNull;
 
 /**
  * @author Juergen Hoeller
@@ -36,61 +33,62 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
  * @author Michael Isvy
  * @author Dave Syer
  */
-@Controller
-class VisitController {
+@Component("/owners/${ownerId}/pets/${petId}/visits")
+public class VisitController {
 
-	private final OwnerDao owners;
+	private final OwnerDao ownerDao;
 
-	public VisitController(OwnerDao owners) {
-		this.owners = owners;
+    private final DefaultValidator validator;
+
+	public VisitController(OwnerDao ownerDao, DefaultValidator validator) {
+		this.ownerDao = ownerDao;
+        this.validator = validator;
 	}
 
-	@InitBinder
-	public void setAllowedFields(WebDataBinder dataBinder) {
-		dataBinder.setDisallowedFields("id");
+	@RequestToGet("/new")
+    @Dispatch("pets/createOrUpdateVisitForm")
+	public void initNewVisitForm(@NonNull Translet translet, @Required int ownerId, @Required int petId) {
+        Owner owner = findOwner(ownerId, petId);
+        Pet pet = owner.getPet(petId);
+        Visit visit = new Visit();
+
+        translet.setAttribute("owner", owner);
+        translet.setAttribute("pet", pet);
+        translet.setAttribute("visit", visit);
 	}
 
-	/**
-	 * Called before each and every @RequestMapping annotated method. 2 goals: - Make sure
-	 * we always have fresh data - Since we do not use the session scope, make sure that
-	 * Pet object always has an id (Even though id is not part of the form fields)
-	 * @param petId
-	 * @return Pet
-	 */
-	@ModelAttribute("visit")
-	public Visit loadPetWithVisit(@PathVariable("ownerId") int ownerId, @PathVariable("petId") int petId,
-			Map<String, Object> model) {
-		Owner owner = this.owners.findById(ownerId);
+	@RequestToPost("/new")
+    @Redirect("/owners/${ownerId}")
+	public void processNewVisitForm(@NonNull Translet translet, @Required int ownerId, @Required int petId, Visit visit) {
+        Owner owner = findOwner(ownerId, petId);
+        Pet pet = owner.getPet(petId);
 
-		Pet pet = owner.getPet(petId);
-		model.put("pet", pet);
-		model.put("owner", owner);
+        ValidationResult result = validator.validate(visit);
+        if (result.hasErrors()) {
+            translet.setAttribute("owner", owner);
+            translet.setAttribute("pet", pet);
+            translet.setAttribute("visit", visit);
+            translet.setAttribute("errors", result.getErrors());
+            translet.dispatch("pets/createOrUpdateVisitForm");
+            return;
+        }
 
-		Visit visit = new Visit();
-		pet.addVisit(visit);
-		return visit;
+        pet.addVisit(visit);
+		this.ownerDao.save(owner);
+
+		translet.getOutputFlashMap().put("message", "Your visit has been saved");
 	}
 
-	// Spring MVC calls method loadPetWithVisit(...) before initNewVisitForm is
-	// called
-	@GetMapping("/owners/{ownerId}/pets/{petId}/visits/new")
-	public String initNewVisitForm() {
-		return "pets/createOrUpdateVisitForm";
-	}
-
-	// Spring MVC calls method loadPetWithVisit(...) before processNewVisitForm is
-	// called
-	@PostMapping("/owners/{ownerId}/pets/{petId}/visits/new")
-	public String processNewVisitForm(@ModelAttribute Owner owner, @PathVariable int petId, @Valid Visit visit,
-			BindingResult result, RedirectAttributes redirectAttributes) {
-		if (result.hasErrors()) {
-			return "pets/createOrUpdateVisitForm";
-		}
-
-		owner.addVisit(petId, visit);
-		this.owners.save(owner);
-		redirectAttributes.addFlashAttribute("message", "Your visit has been saved");
-		return "redirect:/owners/{ownerId}";
-	}
+    @NonNull
+    private Owner findOwner(int ownerId, int petId) {
+        Owner owner = ownerDao.findById(ownerId, petId);
+        if (owner == null) {
+            throw new IllegalArgumentException("Owner ID not found: " + ownerId);
+        }
+        if (owner.getPet(petId) == null) {
+            throw new IllegalArgumentException("Pet ID not found: " + petId);
+        }
+        return owner;
+    }
 
 }

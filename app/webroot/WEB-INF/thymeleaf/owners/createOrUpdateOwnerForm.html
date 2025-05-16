@@ -16,6 +16,7 @@
             <button th:with="text=${owner['new']} ? 'Add Owner' : 'Update Owner'"
                     class="btn btn-primary" type="submit" th:text="${text}">Add Owner
             </button>
+            <button class="btn btn-primary" type="button" onclick="history.back();">Cancel</button>
         </div>
     </div>
 </form>

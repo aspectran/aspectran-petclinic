@@ -9382,6 +9382,12 @@ table td.action-column {
 hr {
   border-top: 1px dotted #34302D; }
 
+pre.error {
+  text-wrap: auto;
+  background-color: black;
+  color: #ccc;
+  padding: 10px; }
+
 @font-face {
   font-family: 'varela_roundregular';
   src: url("../fonts/varela_round-webfont.eot");

@@ -38,7 +38,20 @@ public class ErrorFallbackAspect {
     @Dispatch("error")
     public void fallback(@NonNull Translet translet) {
         logger.error("Raised exception", translet.getRaisedException());
-        translet.setAttribute("message", translet.getRaisedException().getMessage());
+        translet.getResponseAdapter().reset();
+
+        Throwable cause = translet.getRaisedException();
+        if (cause != null) {
+            Throwable rootCause = translet.getRootCauseOfRaisedException();
+            if (cause == rootCause) {
+                rootCause = null;
+            }
+
+            String message = (rootCause == null ? cause.getMessage() :
+                    cause.getMessage() + "\nRoot cause: " + rootCause.getMessage());
+
+            translet.setAttribute("message", message);
+        }
     }
 
 }

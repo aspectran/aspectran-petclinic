@@ -23,6 +23,7 @@
             <button th:with="text=${pet['new']} ? 'Add Pet' : 'Update Pet'"
                     class="btn btn-primary" type="submit" th:text="${text}">Add Pet
             </button>
+            <button class="btn btn-primary" type="button" onclick="history.back();">Cancel</button>
         </div>
     </div>
 </form>
