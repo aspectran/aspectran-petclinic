@@ -71,7 +71,6 @@ public class OwnerController {
         ownerDao.save(owner);
 
 		translet.getOutputFlashMap().put("message", "New Owner Created");
-//        translet.getOutputFlashMap().setTargetRequestName("/owners/" + owner.getId());
         translet.redirect("/owners/" + owner.getId());
 	}
 
@@ -132,7 +131,6 @@ public class OwnerController {
         ownerDao.save(existingOwner);
 
         translet.getOutputFlashMap().put("message", "Owner Values Updated");
-//        translet.getOutputFlashMap().setTargetRequestName("/owners/" + ownerId);
         translet.redirect("/owners/" + ownerId);
 	}
 
