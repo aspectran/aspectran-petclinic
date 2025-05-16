@@ -132,7 +132,9 @@ public class PetController {
         }
 
         if (result.hasErrors()) {
+            translet.setAttribute("owner", owner);
             translet.setAttribute("pet", pet);
+            translet.setAttribute("types", populatePetTypes());
             translet.dispatch("pets/createOrUpdatePetForm");
             return;
 		}
