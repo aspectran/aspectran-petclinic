@@ -41,14 +41,17 @@ shell: {
          info: BLUE
     }
     greetings: (
-        |
-        |{{GREEN  }}        ______       __  _____ __
-        |{{GREEN  }}       / / __ \___  / /_/ ___// /_____  ________
-        |{{GREEN  }}  __  / / /_/ / _ \/ __/\__ \/ __/ __ \/ ___/ _ \
-        |{{GREEN  }} / /_/ / ____/  __/ /_ ___/ / /_/ /_/ / /  /  __/
-        |{{CYAN   }} \____/_/    \___/\__//____/\__/\____/_/   \___/    Demo
-        |{{CYAN   }}=========================================================
-        |{{MAGENTA}}Welcome To Petclinic Demo #{class:com.aspectran.core.AboutMe^version}
+        |{{GREEN  }}              |\      _,,,--,,_
+        |{{GREEN  }}             /,`.-'`'   ._  \-;;,_
+        |{{GREEN  }}  _______ __|,4-  ) )_   .;.(__`'-'__     ___ __    _ ___ _______
+        |{{GREEN  }} |       | '---''(_/._)-'(_\_)   |   |   |   |  |  | |   |       |
+        |{{GREEN  }} |    _  |    ___|_     _|       |   |   |   |   |_| |   |       | __ _ _
+        |{{GREEN  }} |   |_| |   |___  |   | |       |   |   |   |       |   |       | \ \ \ \
+        |{{GREEN  }} |    ___|    ___| |   | |      _|   |___|   |  _    |   |      _|  \ \ \ \
+        |{{CYAN   }} |   |   |   |___  |   | |     |_|       |   | | |   |   |     |_    ) ) ) )
+        |{{CYAN   }} |___|   |_______| |___| |_______|_______|___|_|  |__|___|_______|  / / / /
+        |{{CYAN   }}==================================================================/_/_/_/
+        |{{MAGENTA}} :: Built with Aspectran :: #{class:com.aspectran.core.AboutMe^version}
         |{{reset  }}
         |If you want a list of all supported built-in commands, type '{{GREEN}}help{{reset}}'.
         |To get help on a specific command, type '{{GREEN}}command_name -h{{reset}}'.
