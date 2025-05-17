@@ -1,5 +1,2 @@
-mvnw            text eol=lf
-*.java          text eol=lf
-
-/gradlew        text eol=lf
-*.bat           text eol=crlf
+# Set the default behavior, in case people don't have core.autocrlf set.
+* text=auto

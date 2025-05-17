@@ -3,7 +3,8 @@
 <body>
 
 <h2>Owner</h2>
-<form th:object="${owner}" class="form-horizontal" id="add-owner-form" method="post">
+
+<form class="form-horizontal" id="add-owner-form" method="post">
     <div class="form-group has-feedback">
         <input th:replace="~{fragments/inputField :: input ('text', 'First Name', 'firstName', ${owner.firstName})}"/>
         <input th:replace="~{fragments/inputField :: input ('text', 'Last Name', 'lastName', ${owner.lastName})}"/>
@@ -16,7 +17,8 @@
             <button th:with="text=${owner['new']} ? 'Add Owner' : 'Update Owner'"
                     class="btn btn-primary" type="submit" th:text="${text}">Add Owner
             </button>
-            <button class="btn btn-primary" type="button" onclick="history.back();">Cancel</button>
+            <a th:if="${!param.page}" class="btn btn-primary" onclick="history.back();">Cancel</a>
+            <a th:if="${param.page}" class="btn btn-primary" th:href="@{/owners(page=${param.page})}">Cancel</a>
         </div>
     </div>
 </form>

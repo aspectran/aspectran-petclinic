@@ -13,7 +13,7 @@
             <property name="jakarta.persistence.jdbc.password" value=""/>
             <property name="jakarta.persistence.jdbc.url" value="jdbc:h2:~/petclinic;MODE=MariaDB;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;TRACE_LEVEL_FILE=2;INIT=RUNSCRIPT FROM 'classpath:app/petclinic/common/jpa/h2/petclinic-creation.sql'"/>
             <property name="hibernate.show_sql" value="true"/>
-            <property name="hibernate.format_sql" value="true"/>
+            <property name="hibernate.format_sql" value="false"/>
             <property name="hibernate.user_sql_comments" value="true"/>
             <property name="hibernate.id.new_generator_mappings" value="true"/>
         </properties>

@@ -25,11 +25,13 @@ import com.aspectran.core.component.bean.annotation.Dispatch;
 import com.aspectran.core.component.bean.annotation.Request;
 import com.aspectran.core.component.bean.annotation.RequestToGet;
 import com.aspectran.core.component.bean.annotation.RequestToPost;
+import com.aspectran.core.component.bean.annotation.Required;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.aspectran.web.support.http.HttpStatusSetter;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Juergen Hoeller
@@ -50,30 +52,6 @@ public class OwnerController {
         this.validator = validator;
 	}
 
-	@RequestToGet("/owners/new")
-    @Dispatch("owners/createOrUpdateOwnerForm")
-	public void initCreationForm(@NonNull Translet translet) {
-		Owner owner = new Owner();
-        translet.setAttribute("owner", owner);
-	}
-
-	@RequestToPost("/owners/new")
-	public void processCreationForm(@NonNull Translet translet, Owner owner) {
-        ValidationResult result = validator.validate(owner);
-        if (result.hasErrors()) {
-            translet.setAttribute("errors", result.getErrors());
-            translet.setAttribute("owner", owner);
-            translet.getOutputFlashMap().put("error", "There was an error in creating the owner.");
-            translet.dispatch("owners/createOrUpdateOwnerForm");
-            return;
-        }
-
-        ownerDao.save(owner);
-
-		translet.getOutputFlashMap().put("message", "New Owner Created");
-        translet.redirect("/owners/" + owner.getId());
-	}
-
 	@Request("/owners/find")
     @Dispatch("owners/findOwners")
 	public void initFindForm(@NonNull Translet translet, Integer ownerId) {
@@ -83,7 +61,7 @@ public class OwnerController {
 
 	@Request("/owners")
     @Dispatch("owners/ownersList")
-	public void processFindForm(Translet translet, String lastName) {
+	public void processFindForm(@NonNull Translet translet, String lastName) {
 		// find owners by last name
         PageInfo pageInfo = PageInfo.of(translet, 5);
         List<Owner> listOwners = ownerDao.findByLastName(StringUtils.nullToEmpty(lastName), pageInfo);
@@ -106,17 +84,42 @@ public class OwnerController {
 
         // multiple owners found
         translet.setAttribute("listOwners", listOwners);
-        translet.setAttribute("page", pageInfo);
+        translet.setAttribute("pageInfo", pageInfo);
 	}
+
+    @RequestToGet("/owners/new")
+    @Dispatch("owners/createOrUpdateOwnerForm")
+    public void initCreationForm(@NonNull Translet translet) {
+        Owner owner = new Owner();
+        translet.setAttribute("owner", owner);
+    }
+
+    @RequestToPost("/owners/new")
+    public void processCreationForm(@NonNull Translet translet, Owner owner, Integer page) {
+        ValidationResult result = validator.validate(owner);
+        if (result.hasErrors()) {
+            translet.setAttribute("errors", result.getErrors());
+            translet.setAttribute("owner", owner);
+            translet.getOutputFlashMap().put("error", "There was an error in creating the owner.");
+            translet.dispatch("owners/createOrUpdateOwnerForm");
+            return;
+        }
+
+        ownerDao.save(owner);
+
+        translet.getOutputFlashMap().put("message", "New Owner Created");
+        translet.redirect("/owners/" + owner.getId(),
+                (page != null ? Map.of("page", Integer.toString(page)) : null));
+    }
 
     @Request("/owners/${ownerId}/edit")
     @Dispatch("owners/createOrUpdateOwnerForm")
-	public void initUpdateOwnerForm(@NonNull Translet translet, int ownerId) {
+	public void initUpdateOwnerForm(@NonNull Translet translet, @Required int ownerId) {
         showOwner(translet, ownerId);
 	}
 
     @RequestToPost("/owners/${ownerId}/edit")
-	public void processUpdateOwnerForm(@NonNull Translet translet, Owner owner, int ownerId) {
+	public void processUpdateOwnerForm(@NonNull Translet translet, Owner owner, @Required int ownerId, Integer page) {
         ValidationResult result = validator.validate(owner);
         if (result.hasErrors()) {
             translet.setAttribute("errors", result.getErrors());
@@ -130,8 +133,9 @@ public class OwnerController {
         existingOwner.updateOwner(owner);
         ownerDao.save(existingOwner);
 
-        translet.getOutputFlashMap().put("message", "Owner Values Updated");
-        translet.redirect("/owners/" + ownerId);
+        translet.getOutputFlashMap().put("message", "Owner information Updated");
+        translet.redirect("/owners/" + ownerId,
+                (page != null ? Map.of("page", Integer.toString(page)) : null));
 	}
 
 	/**
@@ -140,7 +144,7 @@ public class OwnerController {
 	 */
 	@Request("/owners/${ownerId}")
     @Dispatch("owners/ownerDetails")
-	public void showOwner(@NonNull Translet translet, int ownerId) {
+	public void showOwner(@NonNull Translet translet, @Required int ownerId) {
         Owner owner = ownerDao.findById(ownerId);
         if (owner == null) {
             translet.setAttribute("error", "The owner with id " + ownerId + " doesn't exist.");

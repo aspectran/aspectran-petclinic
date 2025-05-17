@@ -25,7 +25,7 @@
     </tr>
 </table>
 
-<form th:object="${visit}" class="form-horizontal" method="post">
+<form class="form-horizontal" method="post">
     <div class="form-group has-feedback">
         <input th:replace="~{fragments/inputField :: input ('date', 'Date', 'date', ${visit.date})}"/>
         <input th:replace="~{fragments/inputField :: input ('text', 'Description', 'description', ${visit.description})}"/>

@@ -48,7 +48,7 @@ public class VetController {
         List<Vet> listVets = vetDao.findAll(pageInfo);
 
         translet.setAttribute("listVets", listVets);
-        translet.setAttribute("page", pageInfo);
+        translet.setAttribute("pageInfo", pageInfo);
 	}
 
 }
