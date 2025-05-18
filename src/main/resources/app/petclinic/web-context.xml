@@ -91,17 +91,9 @@
             <setting name="viewDispatcher" value="thymeleafViewDispatcher"/>
             <setting name="proxyProtocolAware" value="true"/>
         </settings>
-<!--        <advice>-->
-<!--            <before>-->
-<!--                <echo>-->
-<!--                    <item name="staticCodes">%{staticCodes}</item>-->
-<!--                </echo>-->
-<!--            </before>-->
-<!--        </advice>-->
     </aspect>
 
-<!--    <append resource="app/petclinic/common/xss-prevent.xml"/>-->
-<!--    <append resource="app/petclinic/common/static-codes.xml"/>-->
+<!--    <append resource="app/petclinic/common/filter/xss-prevent.xml"/>-->
 <!--    <append resource="app/petclinic/monitoring/monitoring.xml"/>-->
 
 </aspectran>
