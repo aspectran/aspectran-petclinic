@@ -18,6 +18,7 @@ package app.petclinic.owner;
 import java.util.ArrayList;
 import java.util.List;
 
+import app.petclinic.common.validation.constraints.TelephoneNumber;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import org.springframework.core.style.ToStringCreator;
 import app.petclinic.model.Person;
@@ -57,7 +58,7 @@ public class Owner extends Person {
 
 	@Column(name = "telephone")
 	@NotBlank
-	@Digits(fraction = 0, integer = 10)
+    @TelephoneNumber
 	private String telephone;
 
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
