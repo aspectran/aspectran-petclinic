@@ -46,7 +46,6 @@ import jakarta.persistence.Table;
 public class Pet extends NamedEntity {
 
 	@Column(name = "birth_date")
-	//@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDate birthDate;
 
 	@ManyToOne
