@@ -7,7 +7,7 @@ import jakarta.persistence.EntityTransaction;
 /**
  * <p>Created: 2025-04-24</p>
  */
-public class EntityManagerAdvice {
+public final class EntityManagerAdvice {
 
     private final EntityManagerFactory entityManagerFactory;
 

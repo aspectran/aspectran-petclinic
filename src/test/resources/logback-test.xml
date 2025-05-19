@@ -8,5 +8,7 @@
 
     <logger name="com.aspectran.daemon.command.polling.DefaultFileCommander" level="trace"/>
     <logger name="app.petclinic" level="debug"/>
+    <logger name="org.hibernate.SQL" level="debug"/>
+    <logger name="org.hibernate.orm.jdbc.bind" level="trace"/>
 
 </configuration>
