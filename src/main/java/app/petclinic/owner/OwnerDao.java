@@ -16,13 +16,12 @@
 package app.petclinic.owner;
 
 import app.petclinic.common.db.DefaultEntityQuery;
-import app.petclinic.common.jpa.EntityQuery;
 import app.petclinic.common.pagination.PageInfo;
 import com.aspectran.core.component.bean.annotation.Autowired;
 import com.aspectran.core.component.bean.annotation.Component;
+import com.aspectran.jpa.EntityQuery;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.querydsl.core.Fetchable;
-import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
@@ -51,8 +50,6 @@ public class OwnerDao {
 	 * Retrieve all {@link PetType}s from the data store.
 	 * @return a Collection of {@link PetType}s.
 	 */
-//	@Query("SELECT ptype FROM PetType ptype ORDER BY ptype.name")
-//	@Transactional(readOnly = true)
 	public List<PetType> findPetTypes() {
         QPetType petType = QPetType.petType;
         return entityQuery
@@ -68,8 +65,6 @@ public class OwnerDao {
 	 * @return a Collection of matching {@link Owner}s (or an empty Collection if none
 	 * found)
 	 */
-//	@Query("SELECT DISTINCT owner FROM Owner owner left join  owner.pets WHERE owner.lastName LIKE :lastName% ")
-//	@Transactional(readOnly = true)
 	public List<Owner> findByLastName(String lastName, @NonNull PageInfo pageInfo) {
         QOwner owner = QOwner.owner;
         List<Owner> listOwners = entityQuery
@@ -94,8 +89,6 @@ public class OwnerDao {
 	 * @param id the id to search for
 	 * @return the {@link Owner} if found
 	 */
-//	@Query("SELECT owner FROM Owner owner left join fetch owner.pets WHERE owner.id =:id")
-//	@Transactional(readOnly = true)
 	public Owner findById(int id) {
         QOwner owner = QOwner.owner;
         return entityQuery
@@ -108,10 +101,9 @@ public class OwnerDao {
 	/**
 	 * Retrieve an {@link Owner} from the data store by id.
 	 * @param ownerId the id to search for
+	 * @param petId the id to search for
 	 * @return the {@link Owner} if found
 	 */
-//	@Query("SELECT owner FROM Owner owner left join fetch owner.pets WHERE owner.id =:id")
-//	@Transactional(readOnly = true)
 	public Owner findById(int ownerId, int petId) {
         QOwner owner = QOwner.owner;
         return entityQuery
@@ -134,10 +126,8 @@ public class OwnerDao {
     }
 
 	/**
-	 * Returns all the owners from data store
+	 * Returns all the owners from data store.
 	 **/
-//	@Query("SELECT owner FROM Owner owner")
-//	@Transactional(readOnly = true)
 	public List<Owner> findAll(@NonNull PageInfo pageInfo) {
         QOwner owner = QOwner.owner;
         List<Owner> listOwners = entityQuery

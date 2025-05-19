@@ -17,7 +17,6 @@ package app.petclinic.owner;
 
 import java.time.LocalDate;
 
-import org.springframework.format.annotation.DateTimeFormat;
 import app.petclinic.model.BaseEntity;
 
 import jakarta.persistence.Column;
@@ -36,7 +35,7 @@ import jakarta.validation.constraints.NotBlank;
 public class Visit extends BaseEntity {
 
 	@Column(name = "visit_date")
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	//@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDate date;
 
 	@NotBlank

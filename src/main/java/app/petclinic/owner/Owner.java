@@ -19,10 +19,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import app.petclinic.common.validation.constraints.TelephoneNumber;
+import com.aspectran.utils.Assert;
+import com.aspectran.utils.ToStringBuilder;
 import com.aspectran.utils.annotation.jsr305.NonNull;
-import org.springframework.core.style.ToStringCreator;
 import app.petclinic.model.Person;
-import org.springframework.util.Assert;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -32,7 +32,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
-import jakarta.validation.constraints.Digits;
 import jakarta.validation.constraints.NotBlank;
 
 /**
@@ -146,14 +145,15 @@ public class Owner extends Person {
 
 	@Override
 	public String toString() {
-		return new ToStringCreator(this).append("id", this.getId())
-			.append("new", this.isNew())
-			.append("lastName", this.getLastName())
-			.append("firstName", this.getFirstName())
-			.append("address", this.address)
-			.append("city", this.city)
-			.append("telephone", this.telephone)
-			.toString();
+		return new ToStringBuilder()
+                .append("id", this.getId())
+                .append("new", this.isNew())
+                .append("lastName", this.getLastName())
+                .append("firstName", this.getFirstName())
+                .append("address", this.address)
+                .append("city", this.city)
+                .append("telephone", this.telephone)
+                .toString();
 	}
 
 	/**

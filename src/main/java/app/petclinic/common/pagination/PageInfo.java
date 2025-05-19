@@ -1,9 +1,9 @@
 package app.petclinic.common.pagination;
 
 import com.aspectran.core.activity.Translet;
+import com.aspectran.utils.Assert;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
-import org.springframework.util.Assert;
 
 import java.util.function.LongSupplier;
 

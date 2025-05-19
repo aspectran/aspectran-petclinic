@@ -22,8 +22,8 @@ import java.util.List;
 import java.util.Set;
 
 import app.petclinic.model.Person;
-import org.springframework.beans.support.MutableSortDefinition;
-import org.springframework.beans.support.PropertyComparator;
+//import org.springframework.beans.support.MutableSortDefinition;
+//import org.springframework.beans.support.PropertyComparator;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -63,7 +63,7 @@ public class Vet extends Person {
     @XmlElement
     public List<Specialty> getSpecialties() {
         List<Specialty> sortedSpecs = new ArrayList<>(getSpecialtiesInternal());
-        PropertyComparator.sort(sortedSpecs, new MutableSortDefinition("name", true, true));
+        //PropertyComparator.sort(sortedSpecs, new MutableSortDefinition("name", true, true));
         return Collections.unmodifiableList(sortedSpecs);
     }
 

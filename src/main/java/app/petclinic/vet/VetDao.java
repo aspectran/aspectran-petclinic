@@ -1,10 +1,10 @@
 package app.petclinic.vet;
 
 import app.petclinic.common.db.DefaultEntityQuery;
-import app.petclinic.common.jpa.EntityQuery;
 import app.petclinic.common.pagination.PageInfo;
 import com.aspectran.core.component.bean.annotation.Autowired;
 import com.aspectran.core.component.bean.annotation.Component;
+import com.aspectran.jpa.EntityQuery;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.querydsl.core.Fetchable;
 

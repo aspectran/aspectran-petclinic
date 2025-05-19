@@ -20,8 +20,8 @@ import app.petclinic.common.validation.ValidationResult;
 import com.aspectran.core.activity.Translet;
 import com.aspectran.core.component.bean.annotation.Bean;
 import com.aspectran.core.component.bean.annotation.Component;
+import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
-import org.springframework.util.StringUtils;
 
 /**
  * <code>Validator</code> for <code>Pet</code> forms.

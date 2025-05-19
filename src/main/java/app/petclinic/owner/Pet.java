@@ -22,8 +22,6 @@ import java.util.Set;
 
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import jakarta.persistence.Transient;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import org.springframework.format.annotation.DateTimeFormat;
 import app.petclinic.model.NamedEntity;
 
 import jakarta.persistence.CascadeType;
@@ -48,7 +46,7 @@ import jakarta.persistence.Table;
 public class Pet extends NamedEntity {
 
 	@Column(name = "birth_date")
-	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	//@DateTimeFormat(pattern = "yyyy-MM-dd")
 	private LocalDate birthDate;
 
 	@ManyToOne
