@@ -54,7 +54,6 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <aspectran.version>8.5.0-SNAPSHOT</aspectran.version>
-        <querydsl.version>5.1.0</querydsl.version>
         <webjars-bootstrap.version>5.3.3</webjars-bootstrap.version>
     </properties>
 
@@ -102,13 +101,23 @@
             <artifactId>aspectran-with-jpa</artifactId>
             <version>${aspectran.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.aspectran</groupId>
+            <artifactId>aspectran-with-querydsl</artifactId>
+            <version>${aspectran.version}</version>
+        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>jakarta.persistence</groupId>-->
+<!--            <artifactId>jakarta.persistence-api</artifactId>-->
+<!--            <version>3.2.0</version>-->
+<!--&lt;!&ndash;            <scope>compile</scope>&ndash;&gt;-->
+<!--        </dependency>-->
         <!-- Querydsl - generate QClasses -->
         <dependency>
-            <groupId>com.querydsl</groupId>
+            <groupId>io.github.openfeign.querydsl</groupId>
             <artifactId>querydsl-apt</artifactId>
-            <version>${querydsl.version}</version>
+            <version>6.11</version>
             <classifier>jakarta</classifier>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.zaxxer</groupId>
@@ -135,13 +144,14 @@
         <dependency>
             <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-core</artifactId>
-            <version>6.6.13.Final</version>
+            <version>7.0.0.CR2</version>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>org.hibernate.orm</groupId>-->
-<!--            <artifactId>hibernate-hikaricp</artifactId>-->
-<!--            <version>6.6.15.Final</version>-->
-<!--        </dependency>-->
+
+        <dependency>
+            <groupId>org.eclipse.persistence</groupId>
+            <artifactId>eclipselink</artifactId>
+            <version>5.0.0-B07</version>
+        </dependency>
         <dependency>
             <groupId>jakarta.xml.bind</groupId>
             <artifactId>jakarta.xml.bind-api</artifactId>

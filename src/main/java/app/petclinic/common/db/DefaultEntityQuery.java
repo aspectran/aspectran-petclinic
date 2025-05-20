@@ -2,7 +2,7 @@ package app.petclinic.common.db;
 
 import com.aspectran.core.component.bean.annotation.Bean;
 import com.aspectran.core.component.bean.annotation.Component;
-import com.aspectran.jpa.EntityQuery;
+import com.aspectran.jpa.querydsl.EntityQuery;
 import com.querydsl.jpa.JPQLTemplates;
 
 /**
