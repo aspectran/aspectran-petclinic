@@ -101,24 +101,20 @@
             <artifactId>aspectran-with-jpa</artifactId>
             <version>${aspectran.version}</version>
         </dependency>
+        <!-- Querydsl dependencies -->
         <dependency>
-            <groupId>com.aspectran</groupId>
-            <artifactId>aspectran-with-querydsl</artifactId>
-            <version>${aspectran.version}</version>
+            <groupId>io.github.openfeign.querydsl</groupId>
+            <artifactId>querydsl-jpa</artifactId>
+            <version>6.11</version>
+            <optional>true</optional>
         </dependency>
-<!--        <dependency>-->
-<!--            <groupId>jakarta.persistence</groupId>-->
-<!--            <artifactId>jakarta.persistence-api</artifactId>-->
-<!--            <version>3.2.0</version>-->
-<!--&lt;!&ndash;            <scope>compile</scope>&ndash;&gt;-->
-<!--        </dependency>-->
-        <!-- Querydsl - generate QClasses -->
         <dependency>
             <groupId>io.github.openfeign.querydsl</groupId>
             <artifactId>querydsl-apt</artifactId>
             <version>6.11</version>
             <classifier>jakarta</classifier>
         </dependency>
+
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>

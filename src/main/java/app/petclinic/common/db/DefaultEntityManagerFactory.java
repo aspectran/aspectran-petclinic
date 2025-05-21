@@ -1,16 +1,15 @@
 package app.petclinic.common.db;
 
-import app.petclinic.owner.Owner;
-import app.petclinic.owner.Pet;
-import app.petclinic.owner.Visit;
-import app.petclinic.vet.Specialty;
-import app.petclinic.vet.Vet;
 import com.aspectran.core.component.bean.annotation.Autowired;
 import com.aspectran.core.component.bean.annotation.Bean;
 import com.aspectran.core.component.bean.annotation.Component;
+import com.aspectran.core.component.bean.annotation.Initialize;
 import com.aspectran.jpa.EntityManagerFactoryBean;
+import com.aspectran.jpa.eclipselink.Slf4jSessionLogger;
 import jakarta.persistence.PersistenceConfiguration;
 import jakarta.persistence.PersistenceUnitTransactionType;
+import org.eclipse.persistence.config.PersistenceUnitProperties;
+import org.eclipse.persistence.logging.SessionLog;
 import org.hibernate.cfg.JdbcSettings;
 import org.hibernate.jpa.HibernatePersistenceConfiguration;
 import org.hibernate.jpa.HibernatePersistenceProvider;
@@ -47,32 +46,30 @@ public class DefaultEntityManagerFactory extends EntityManagerFactoryBean {
     @Override
     protected void preConfigure(Map<String, Object> properties) {
         super.preConfigure(properties);
-        properties.put(JdbcSettings.JAKARTA_NON_JTA_DATASOURCE, dataSource);
-        properties.put(JdbcSettings.SHOW_SQL, false);
-        properties.put(JdbcSettings.FORMAT_SQL, false);
-        properties.put(JdbcSettings.USE_SQL_COMMENTS, false);
+//        properties.put(JdbcSettings.JAKARTA_NON_JTA_DATASOURCE, dataSource);
+//        properties.put(JdbcSettings.SHOW_SQL, false);
+//        properties.put(JdbcSettings.FORMAT_SQL, false);
+//        properties.put(JdbcSettings.USE_SQL_COMMENTS, false);
 
-        properties.put("eclipselink.logging.level", "FINE");
-        properties.put("eclipselink.logging.parameters", "true");
-        properties.put("eclipselink.logging.level.sql", "FINE");
-        properties.put("eclipselink.logging.level.session", "FINE");
-        properties.put("eclipselink.logging.level.transaction", "FINE");
-        properties.put("eclipselink.logging.level.connection", "FINE");
-        properties.put("eclipselink.logging.level.query", "FINE");
-        properties.put("eclipselink.logging.level.event", "FINE");
-        properties.put("eclipselink.logging.level.metadata", "FINE");
+        properties.put(PersistenceUnitProperties.NON_JTA_DATASOURCE, dataSource);
+        properties.put(PersistenceUnitProperties.LOGGING_LOGGER, Slf4jSessionLogger.class.getName());
+
+        properties.put(PersistenceUnitProperties.DDL_GENERATION, PersistenceUnitProperties.CREATE_ONLY);
+        properties.put(PersistenceUnitProperties.DDL_GENERATION_MODE, PersistenceUnitProperties.DDL_BOTH_GENERATION);
     }
 
     @Override
-    protected void preConfigure(PersistenceConfiguration persistenceConfiguration) {
-        super.preConfigure(persistenceConfiguration);
-//        persistenceConfiguration.provider(HibernatePersistenceProvider.class.getName());
-        persistenceConfiguration.transactionType(PersistenceUnitTransactionType.RESOURCE_LOCAL);
-        persistenceConfiguration.managedClass(Vet.class);
-        persistenceConfiguration.managedClass(Specialty.class);
-        persistenceConfiguration.managedClass(Visit.class);
-        persistenceConfiguration.managedClass(Owner.class);
-        persistenceConfiguration.managedClass(Pet.class);
+    protected void preConfigure(PersistenceConfiguration configuration) {
+        super.preConfigure(configuration);
+//        configuration.provider(HibernatePersistenceProvider.class.getName());
+        configuration.transactionType(PersistenceUnitTransactionType.RESOURCE_LOCAL);
+    }
+
+    @Initialize(profile = "!prod")
+    public void init() {
+        setProperty(PersistenceUnitProperties.LOGGING_LEVEL, "FINE");
+        setProperty(PersistenceUnitProperties.LOGGING_PARAMETERS, "true");
+        setProperty(PersistenceUnitProperties.CATEGORY_LOGGING_LEVEL_ + SessionLog.SQL, "FINE");
     }
 
 }

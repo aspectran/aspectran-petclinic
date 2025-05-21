@@ -106,6 +106,7 @@ public class OwnerController {
         }
 
         ownerDao.save(owner);
+        assert owner.getId() != null;
 
         translet.getOutputFlashMap().put("message", "New Owner Created");
         translet.redirect("/owners/" + owner.getId(),

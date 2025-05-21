@@ -67,10 +67,11 @@ public class OwnerDao {
 	 */
 	public List<Owner> findByLastName(String lastName, @NonNull PageInfo pageInfo) {
         QOwner owner = QOwner.owner;
+        QPet pet = QPet.pet;
         List<Owner> listOwners = entityQuery
                 .selectDistinct(owner)
                 .from(owner)
-                .leftJoin(owner.pets)
+                .leftJoin(owner.pets, pet)
                 .where(owner.lastName.startsWith(lastName))
                 .offset(pageInfo.getOffset())
                 .limit(pageInfo.getSize())
@@ -91,9 +92,10 @@ public class OwnerDao {
 	 */
 	public Owner findById(int id) {
         QOwner owner = QOwner.owner;
+        QPet pet = QPet.pet;
         return entityQuery
                 .selectFrom(owner)
-                .leftJoin(owner.pets)
+                .leftJoin(owner.pets, pet)
                 .where(owner.id.eq(id))
                 .fetchOne();
     }
@@ -106,9 +108,10 @@ public class OwnerDao {
 	 */
 	public Owner findById(int ownerId, int petId) {
         QOwner owner = QOwner.owner;
+        QPet pet = QPet.pet;
         return entityQuery
                 .selectFrom(owner)
-                .leftJoin(owner.pets)
+                .leftJoin(owner.pets, pet)
                 .where(owner.id.eq(ownerId).and(owner.pets.any().id.eq(petId)))
                 .fetchOne();
     }
@@ -130,9 +133,10 @@ public class OwnerDao {
 	 **/
 	public List<Owner> findAll(@NonNull PageInfo pageInfo) {
         QOwner owner = QOwner.owner;
+        QPet pet = QPet.pet;
         List<Owner> listOwners = entityQuery
                 .selectFrom(owner)
-                .leftJoin(owner.pets)
+                .leftJoin(owner.pets, pet)
                 .offset(pageInfo.getOffset())
                 .limit(pageInfo.getSize())
                 .fetch();

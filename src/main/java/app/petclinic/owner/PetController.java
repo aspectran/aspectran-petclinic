@@ -90,6 +90,7 @@ public class PetController {
 
         owner.addPet(pet);
         ownerDao.save(owner);
+        assert pet.getId() != null;
 
         translet.getOutputFlashMap().put("message", "New Pet has been Added");
 	}
