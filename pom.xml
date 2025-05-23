@@ -54,7 +54,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <aspectran.version>8.5.0-SNAPSHOT</aspectran.version>
-        <webjars-bootstrap.version>5.3.3</webjars-bootstrap.version>
+        <webjars-bootstrap.version>5.3.5</webjars-bootstrap.version>
     </properties>
 
     <repositories>
