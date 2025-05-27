@@ -11,4 +11,6 @@
     <logger name="org.hibernate.SQL" level="debug"/>
     <logger name="org.hibernate.orm.jdbc.bind" level="trace"/>
 
+    <logger name="org.eclipse.persistence.logging" level="debug"/>
+
 </configuration>

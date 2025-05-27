@@ -1,11 +1,11 @@
 /*
- * Copyright 2012-2019 the original author or authors.
+ * Copyright (c) 2012-present-present the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *      https://www.apache.org/licenses/LICENSE-2.0
+ *     https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -19,7 +19,7 @@ import app.petclinic.common.db.DefaultEntityQuery;
 import app.petclinic.common.pagination.PageInfo;
 import com.aspectran.core.component.bean.annotation.Autowired;
 import com.aspectran.core.component.bean.annotation.Component;
-import com.aspectran.jpa.EntityQuery;
+import com.aspectran.jpa.querydsl.EntityQuery;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 import com.querydsl.core.Fetchable;
 
@@ -67,10 +67,11 @@ public class OwnerDao {
 	 */
 	public List<Owner> findByLastName(String lastName, @NonNull PageInfo pageInfo) {
         QOwner owner = QOwner.owner;
+        QPet pet = QPet.pet;
         List<Owner> listOwners = entityQuery
                 .selectDistinct(owner)
                 .from(owner)
-                .leftJoin(owner.pets)
+                .leftJoin(owner.pets, pet)
                 .where(owner.lastName.startsWith(lastName))
                 .offset(pageInfo.getOffset())
                 .limit(pageInfo.getSize())
@@ -91,9 +92,10 @@ public class OwnerDao {
 	 */
 	public Owner findById(int id) {
         QOwner owner = QOwner.owner;
+        QPet pet = QPet.pet;
         return entityQuery
                 .selectFrom(owner)
-                .leftJoin(owner.pets)
+                .leftJoin(owner.pets, pet)
                 .where(owner.id.eq(id))
                 .fetchOne();
     }
@@ -106,9 +108,10 @@ public class OwnerDao {
 	 */
 	public Owner findById(int ownerId, int petId) {
         QOwner owner = QOwner.owner;
+        QPet pet = QPet.pet;
         return entityQuery
                 .selectFrom(owner)
-                .leftJoin(owner.pets)
+                .leftJoin(owner.pets, pet)
                 .where(owner.id.eq(ownerId).and(owner.pets.any().id.eq(petId)))
                 .fetchOne();
     }
@@ -130,9 +133,10 @@ public class OwnerDao {
 	 **/
 	public List<Owner> findAll(@NonNull PageInfo pageInfo) {
         QOwner owner = QOwner.owner;
+        QPet pet = QPet.pet;
         List<Owner> listOwners = entityQuery
                 .selectFrom(owner)
-                .leftJoin(owner.pets)
+                .leftJoin(owner.pets, pet)
                 .offset(pageInfo.getOffset())
                 .limit(pageInfo.getSize())
                 .fetch();

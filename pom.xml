@@ -24,7 +24,7 @@
 
     <name>Petclinic Demo</name>
     <description>Petclinic Demo is a sample web application built on top of Aspectran 8.</description>
-    <inceptionYear>2025</inceptionYear>
+    <inceptionYear>2012</inceptionYear>
 
     <organization>
         <name>The Aspectran Project</name>
@@ -54,8 +54,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <aspectran.version>8.5.0-SNAPSHOT</aspectran.version>
-        <querydsl.version>5.1.0</querydsl.version>
-        <webjars-bootstrap.version>5.3.3</webjars-bootstrap.version>
+        <webjars-bootstrap.version>5.3.5</webjars-bootstrap.version>
     </properties>
 
     <repositories>
@@ -102,18 +101,34 @@
             <artifactId>aspectran-with-jpa</artifactId>
             <version>${aspectran.version}</version>
         </dependency>
-        <!-- Querydsl - generate QClasses -->
-        <dependency>
-            <groupId>com.querydsl</groupId>
-            <artifactId>querydsl-apt</artifactId>
-            <version>${querydsl.version}</version>
-            <classifier>jakarta</classifier>
-            <scope>provided</scope>
-        </dependency>
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
             <version>6.3.0</version>
+        </dependency>
+        <!-- Querydsl dependencies -->
+        <dependency>
+            <groupId>io.github.openfeign.querydsl</groupId>
+            <artifactId>querydsl-jpa</artifactId>
+            <version>6.11</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>io.github.openfeign.querydsl</groupId>
+            <artifactId>querydsl-apt</artifactId>
+            <version>6.11</version>
+            <classifier>jakarta</classifier>
+        </dependency>
+        <!-- EclipseLink dependencies -->
+        <dependency>
+            <groupId>org.eclipse.persistence</groupId>
+            <artifactId>eclipselink</artifactId>
+            <version>5.0.0-B07</version>
+        </dependency>
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+            <version>4.0.2</version>
         </dependency>
         <dependency>
             <groupId>com.h2database</groupId>
@@ -129,19 +144,14 @@
         <dependency>
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
-            <version>8.0.2.Final</version>
+            <version>9.0.0.Final</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.hibernate.orm</groupId>
-            <artifactId>hibernate-core</artifactId>
-            <version>6.6.13.Final</version>
-        </dependency>
-        <dependency>
-            <groupId>jakarta.xml.bind</groupId>
-            <artifactId>jakarta.xml.bind-api</artifactId>
-            <version>4.0.2</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.hibernate.orm</groupId>-->
+<!--            <artifactId>hibernate-core</artifactId>-->
+<!--            <version>7.0.0.Final</version>-->
+<!--        </dependency>-->
 
         <dependency>
             <groupId>org.owasp.esapi</groupId>
@@ -254,51 +264,79 @@
     </build>
 
     <profiles>
+<!--        <profile>-->
+<!--            <id>css-bootstrap</id>-->
+<!--            <build>-->
+<!--                <plugins>-->
+<!--                    <plugin>-->
+<!--                        <groupId>org.apache.maven.plugins</groupId>-->
+<!--                        <artifactId>maven-dependency-plugin</artifactId>-->
+<!--                        <executions>-->
+<!--                            <execution>-->
+<!--                                <id>unpack</id>-->
+<!--                                <?m2e execute onConfiguration,onIncremental?>-->
+<!--                                <phase>generate-resources</phase>-->
+<!--                                <goals>-->
+<!--                                    <goal>unpack</goal>-->
+<!--                                </goals>-->
+<!--                                <configuration>-->
+<!--                                    <artifactItems>-->
+<!--                                        <artifactItem>-->
+<!--                                            <groupId>org.webjars.npm</groupId>-->
+<!--                                            <artifactId>bootstrap</artifactId>-->
+<!--                                            <version>${webjars-bootstrap.version}</version>-->
+<!--                                        </artifactItem>-->
+<!--                                    </artifactItems>-->
+<!--                                    <outputDirectory>${project.build.directory}/webjars</outputDirectory>-->
+<!--                                </configuration>-->
+<!--                            </execution>-->
+<!--                        </executions>-->
+<!--                    </plugin>-->
+<!--                    <plugin>-->
+<!--                        <groupId>com.gitlab.haynes</groupId>-->
+<!--                        <artifactId>libsass-maven-plugin</artifactId>-->
+<!--                        <version>0.2.29</version>-->
+<!--                        <executions>-->
+<!--                            <execution>-->
+<!--                                <phase>generate-resources</phase>-->
+<!--                                <goals>-->
+<!--                                    <goal>compile</goal>-->
+<!--                                </goals>-->
+<!--                            </execution>-->
+<!--                        </executions>-->
+<!--                        <configuration>-->
+<!--                            <inputPath>${basedir}/src/main/scss/</inputPath>-->
+<!--                            <includePath>${project.build.directory}/webjars/META-INF/resources/webjars/bootstrap/${webjars-bootstrap.version}/scss/</includePath>-->
+<!--                            <outputPath>${basedir}/app/webroot/css/</outputPath>-->
+<!--                        </configuration>-->
+<!--                    </plugin>-->
+<!--                </plugins>-->
+<!--            </build>-->
+<!--        </profile>-->
         <profile>
-            <id>css</id>
+            <id>css-bootstrap</id>
             <build>
                 <plugins>
                     <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-dependency-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>unpack</id>
-                                <?m2e execute onConfiguration,onIncremental?>
-                                <phase>generate-resources</phase>
-                                <goals>
-                                    <goal>unpack</goal>
-                                </goals>
-                                <configuration>
-                                    <artifactItems>
-                                        <artifactItem>
-                                            <groupId>org.webjars.npm</groupId>
-                                            <artifactId>bootstrap</artifactId>
-                                            <version>${webjars-bootstrap.version}</version>
-                                        </artifactItem>
-                                    </artifactItems>
-                                    <outputDirectory>${project.build.directory}/webjars</outputDirectory>
-                                </configuration>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <plugin>
-                        <groupId>com.gitlab.haynes</groupId>
-                        <artifactId>libsass-maven-plugin</artifactId>
-                        <version>0.2.29</version>
-                        <executions>
-                            <execution>
-                                <phase>generate-resources</phase>
-                                <goals>
-                                    <goal>compile</goal>
-                                </goals>
-                            </execution>
-                        </executions>
+                        <groupId>io.github.cleydyr</groupId>
+                        <artifactId>dart-sass-maven-plugin</artifactId>
+                        <version>1.5.0</version>
                         <configuration>
-                            <inputPath>${basedir}/src/main/scss/</inputPath>
-                            <includePath>${project.build.directory}/webjars/META-INF/resources/webjars/bootstrap/${webjars-bootstrap.version}/scss/</includePath>
-                            <outputPath>${basedir}/app/webroot/css/</outputPath>
+                            <!-- use a fixed version of dart-saas to ensure reproducible builds -->
+                            <version>1.83.0</version>
+                            <inputFolder>${basedir}/src/main/scss</inputFolder>
+                            <outputFolder>${basedir}/app/webroot/css</outputFolder>
+                            <!--<style>COMPRESSED</style>-->
                         </configuration>
+                        <executions>
+                            <execution>
+                                <id>generate-css-using-sass</id>
+                                <phase>generate-resources</phase>
+                                <goals>
+                                    <goal>compile-sass</goal>
+                                </goals>
+                            </execution>
+                        </executions>
                     </plugin>
                 </plugins>
             </build>

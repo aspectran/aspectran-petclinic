@@ -16,7 +16,7 @@
   height: 46px;
   display: inline-block;
   text-decoration: none;
-  padding: 0;
+  margin-right: 30px;
 }
 
 .navbar a.navbar-brand span {
@@ -34,12 +34,10 @@
   opacity: 1;
 }
 
-.navbar li > a, .navbar-text {
+.navbar li > a {
   font-family: "montserratregular", sans-serif;
   text-shadow: none;
   font-size: 14px;
-
-/* line-height: 14px; */
   padding: 28px 20px;
   transition: all 0.15s;
   -webkit-transition: all 0.15s;
@@ -47,23 +45,25 @@
   -o-transition: all 0.15s;
   -ms-transition: all 0.15s;
 }
+.navbar .navbar-nav.show {
+  padding-bottom: 20px;
+}
+
+.navbar .navbar-collapse.show .nav-link {
+  padding: 10px;
+}
 
 .navbar li > a {
   text-transform: uppercase;
 }
 
-.navbar .navbar-text {
-  margin-top: 0;
-  margin-bottom: 0;
-}
 .navbar li:hover > a {
   color: #eeeeee;
   background-color: #6db33f;
 }
 
-.navbar-toggle {
-  border-width: 0;
-
+.navbar-toggler {
+  border: 0;
   .icon-bar + .icon-bar {
     margin-top: 3px;
   }
@@ -71,5 +71,7 @@
     width: 19px;
     height: 3px;
   }
-
+  &:focus {
+    box-shadow: none;
+  }
 }
