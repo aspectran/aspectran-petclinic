@@ -87,7 +87,7 @@
                 </div>
             </div>
         </div>
-        <div class="breadcrumbs-bar" style="display:none" data-hide-for="medium down">
+        <div class="breadcrumb-bar" style="display:none" data-hide-for="medium down">
             <div class="grid-container ${page.style}">
                 <nav role="navigation" aria-label="You are here:">
                     <ul class="breadcrumbs" itemprop="breadcrumb">
@@ -122,7 +122,7 @@
                 </div>
             </div>
         </div>
-        <div class="grid-container grid-x breadcrumbs-bar ${page.style}">
+        <div class="grid-container grid-x breadcrumb-bar ${page.style}">
             <div class="cell">
                 <nav role="navigation" aria-label="You are here:">
                     <ul class="breadcrumbs" itemprop="breadcrumb">
@@ -201,7 +201,7 @@
     $(function() {
         let $win = $(window);
         let $nav = $("#navigation");
-        let navHeight = $("#masthead").height() - $nav.height();
+        let navHeight = Math.abs($("#masthead").height() - $nav.height());
         let lastScrollTop = 0;
         let scrolled;
         let navFixed;
