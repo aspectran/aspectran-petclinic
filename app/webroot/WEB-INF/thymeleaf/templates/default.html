@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html class="no-js" lang="en" 
       xmlns:th="https://www.thymeleaf.org" 
-      th:fragment="template(pageStyle, pageContent, currentMenu, insertFragmentInMasthead, insertFragmentInMastheadWithImage)">
+      th:fragment="template(pageStyle, contentStyle, pageContent, currentMenu, insertFragmentInMasthead, insertFragmentInMastheadWithImage)">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -144,7 +144,7 @@
             </nav>
         </div>
     </div>
-    <div class="container contour" th:classappend="${pageStyle}">
+    <div class="container contour" th:classappend="${pageStyle} + ' ' + ${contentStyle}">
         <th:block th:insert="${pageContent}"/>
     </div>
 </section>
@@ -189,7 +189,7 @@
                     <p>Copyright © 2018-2025 The Aspectran Project</p>
                 </section>
                 <section id="subfooter-right" class="col-md-6 social-icons text-end">
-                    <%= com.aspectran.core.AboutMe.POWERED_BY_LINK %>
+                    <a href="https://aspectran.com/" th:text="${@com.aspectran.core.AboutMe@getPoweredBy()}">POWERED_BY</a>
                 </section>
             </nav>
         </div>

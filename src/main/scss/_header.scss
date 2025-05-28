@@ -1,77 +1,82 @@
-.navbar {
-  border-top: 4px solid #6db33f;
-  background-color: #34302d;
-  margin-bottom: 0;
-  padding-top: 0;
-  padding-bottom: 0;
-  border-bottom: 0;
-  border-left: 0;
-  border-right: 0;
-}
-
-.navbar a.navbar-brand {
-  background: url("../images/spring-logo-dataflow.png") -1px -1px no-repeat;
-  margin: 12px 0 6px;
-  width: 229px;
-  height: 46px;
-  display: inline-block;
-  text-decoration: none;
-  margin-right: 30px;
-}
-
-.navbar a.navbar-brand span {
-  display: block;
-  width: 229px;
-  height: 46px;
-  background: url("../images/spring-logo-dataflow.png") -1px -48px no-repeat;
-  opacity: 0;
-  -moz-transition: opacity 0.12s ease-in-out;
-  -webkit-transition: opacity 0.12s ease-in-out;
-  -o-transition: opacity 0.12s ease-in-out;
-}
-
-.navbar a:hover.navbar-brand span {
-  opacity: 1;
-}
-
-.navbar li > a {
-  font-family: "montserratregular", sans-serif;
-  text-shadow: none;
-  font-size: 14px;
-  padding: 28px 20px;
-  transition: all 0.15s;
-  -webkit-transition: all 0.15s;
-  -moz-transition: all 0.15s;
-  -o-transition: all 0.15s;
-  -ms-transition: all 0.15s;
-}
-.navbar .navbar-nav.show {
-  padding-bottom: 20px;
-}
-
-.navbar .navbar-collapse.show .nav-link {
-  padding: 10px;
-}
-
-.navbar li > a {
-  text-transform: uppercase;
-}
-
-.navbar li:hover > a {
-  color: #eeeeee;
-  background-color: #6db33f;
-}
-
-.navbar-toggler {
-  border: 0;
-  .icon-bar + .icon-bar {
-    margin-top: 3px;
+.petclinic {
+  .navbar {
+    border-top: 4px solid #6db33f;
+    background-color: #34302d;
+    margin-bottom: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+    border-bottom: 0;
+    border-left: 0;
+    border-right: 0;
   }
-  .icon-bar {
-    width: 19px;
-    height: 3px;
+
+  .navbar a.navbar-brand {
+    background: url("../images/spring-logo-dataflow.png") -1px -1px no-repeat;
+    width: 229px;
+    height: 46px;
+    display: inline-block;
+    text-decoration: none;
   }
-  &:focus {
-    box-shadow: none;
+
+  .navbar a.navbar-brand span {
+    display: block;
+    width: 229px;
+    height: 46px;
+    background: url("../images/spring-logo-dataflow.png") -1px -48px no-repeat;
+    opacity: 0;
+    -moz-transition: opacity 0.12s ease-in-out;
+    -webkit-transition: opacity 0.12s ease-in-out;
+    -o-transition: opacity 0.12s ease-in-out;
+  }
+
+  .navbar a:hover.navbar-brand span {
+    opacity: 1;
+  }
+
+  .navbar li > a {
+    font-family: "montserratregular", sans-serif;
+    text-shadow: none;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 28px 20px;
+    transition: all 0.15s;
+    -webkit-transition: all 0.15s;
+    -moz-transition: all 0.15s;
+    -o-transition: all 0.15s;
+    -ms-transition: all 0.15s;
+  }
+
+  .navbar .navbar-nav.show {
+    padding-bottom: 20px;
+  }
+
+  .navbar .navbar-collapse.show .nav-link {
+    padding: 10px;
+  }
+
+  .navbar li > a {
+    text-transform: uppercase;
+  }
+
+  .navbar li:hover > a {
+    color: #eeeeee;
+    background-color: #6db33f;
+  }
+
+  .navbar-toggler {
+    border: 0;
+
+    .icon-bar + .icon-bar {
+      margin-top: 3px;
+    }
+
+    .icon-bar {
+      width: 19px;
+      height: 3px;
+    }
+
+    &:focus {
+      box-shadow: none;
+    }
   }
 }

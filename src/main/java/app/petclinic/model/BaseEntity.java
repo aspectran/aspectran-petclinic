@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012-present-present the original author or authors.
+ * Copyright (c) 2012-present the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,10 +30,11 @@ import jakarta.persistence.MappedSuperclass;
  * @author Juergen Hoeller
  */
 @MappedSuperclass
+@SuppressWarnings("serial")
 public class BaseEntity implements Serializable {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Integer id;
 
 	public Integer getId() {

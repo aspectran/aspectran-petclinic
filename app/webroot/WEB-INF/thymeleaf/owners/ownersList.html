@@ -1,7 +1,6 @@
 <!DOCTYPE html>
-
-<html xmlns:th="https://www.thymeleaf.org" th:replace="~{fragments/layout :: layout (~{::body},'owners')}">
-
+<html xmlns:th="https://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(~{::body}, 'owners')}">
 <body>
 
 <h2>Owners</h2>
@@ -30,7 +29,7 @@
 </table>
 <div class="row mb-3">
     <div class="col-6">
-        <a class="btn btn-secondary btn-sm" th:href="@{/owners/new(page=${param.page} ?: '1')}">Add Owner</a>
+        <a class="btn btn-primary btn-sm" th:href="@{/owners/new(page=${param.page} ?: '1')}">Add Owner</a>
     </div>
     <div class="col-6">
         <p class="text-end">Total: <span th:text="${pageInfo.totalElements}"></span></p>
@@ -69,4 +68,3 @@
 
 </body>
 </html>
-
