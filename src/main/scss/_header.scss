@@ -45,11 +45,13 @@
     -ms-transition: all 0.15s;
   }
 
-  .navbar .navbar-nav.show {
-    padding-bottom: 20px;
+  .navbar .navbar-collapse.show .navbar-nav {
+    padding-top: 20px;
+    padding-bottom: 10px;
   }
 
-  .navbar .navbar-collapse.show .nav-link {
+  .navbar .navbar-collapse.show .nav-link,
+  .navbar .navbar-collapse.collapsing .nav-link {
     padding: 10px 0 10px 20px;
   }
 
