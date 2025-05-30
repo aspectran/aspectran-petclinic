@@ -6,9 +6,9 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="google" content="notranslate">
-    <title>Aspectran Assets</title>
-    <meta name="description" content="Aspectran Assets is for building and deploying CSS, JS, Fonts, and Images commonly used in Aspectran's demo applications."/>
-    <link rel="stylesheet" type="text/css" href="http://localhost:8090/assets/bootstrap/css/aspectran.css"/>
+    <title>PetClinic Demo</title>
+    <meta name="description" content="PetClinic is a full-stack sample web application built on top Aspectran 8."/>
+    <link rel="stylesheet" type="text/css" href="https://assets.aspectran.com/bootstrap/css/aspectran.css"/>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,700;1,400&display=swap">
     <script src="https://assets.aspectran.com/js/modernizr-custom.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
@@ -30,6 +30,7 @@
     <meta name="msapplication-TileColor" content="#4B555A"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js" integrity="sha384-j1CDi7MgGQ12Z7Qab0qlWQ/Qqz24Gc6BM0thvEMVjHnfYGF0rmFCozFSxQBxwHKO" crossorigin="anonymous"></script>
+    <link th:href="@{/css/petclinic.css}" rel="stylesheet"/>
 </head>
 <body id="top-of-page" th:class="${pageStyle}" itemscope itemtype="https://schema.org/WebPage">
 <nav id="navigation" class="navbar navbar-expand-lg navbar-dark">
@@ -56,61 +57,29 @@
             <div class="top-bar-left me-auto">
                 <ul class="navbar-nav">
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false"
-                            th:href="@{/jsp/templates/default/}" title="JSP Templates">JSP Templates</a>
+                        <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false">Get Involved</a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" th:href="@{/jsp/templates/default/}">Default</a></li>
-                            <li><a class="dropdown-item" th:href="@{/jsp/templates/default/plate}">Plate</a></li>
-                            <li><a class="dropdown-item" th:href="@{/jsp/templates/default/plate solid}">Plate Solid</a></li>
-                            <li><a class="dropdown-item" th:href="@{/jsp/templates/default/fluid}">Fluid</a></li>
-                            <li><a class="dropdown-item" th:href="@{/jsp/templates/default/fluid compact}">Fluid Compact</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" th:href="@{/jsp/samples/mastheadimage}">MastHeadImage</a></li>
-                            <li><a class="dropdown-item" th:href="@{/jsp/samples/appmon}">AppMon</a></li>
+                            <li><a class="dropdown-item" href="https://github.com/aspectran/aspectran-petclinic">GitHub</a></li>
                         </ul>
                     </li>
                     <li class="nav-item dropdown">
                         <a class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown" aria-expanded="false"
-                            th:href="@{/thymeleaf/templates/default/}" title="Thymeleaf Templates">Thymeleaf Templates</a>
+                           title="Sample applications built on Aspectran">More Sample Apps</a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" th:href="@{/thymeleaf/templates/default/}">Default</a></li>
-                            <li><a class="dropdown-item" th:href="@{/thymeleaf/templates/default/plate}">Plate</a></li>
-                            <li><a class="dropdown-item" th:href="@{/thymeleaf/templates/default/plate solid}">Plate Solid</a></li>
-                            <li><a class="dropdown-item" th:href="@{/thymeleaf/templates/default/fluid}">Fluid</a></li>
-                            <li><a class="dropdown-item" th:href="@{/thymeleaf/templates/default/fluid compact}">Fluid Compact</a></li>
-                            <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" th:href="@{/thymeleaf/samples/appmon}">AppMon</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="https://github.com/aspectran/aspectran-assets">Get Involved</a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="https://github.com/aspectran/aspectow-assets">GitHub</a></li>
+                            <li><a class="dropdown-item" href="https://demo.aspectran.com/">Aspectran Demo</a></li>
+                            <li><a class="dropdown-item" href="https://jpetstore.aspectran.com/">JPetStore Demo</a></li>
                         </ul>
                     </li>
                 </ul>
             </div>
             <div class="top-bar-right">
-                <ul class="navbar-nav">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link" th:href="@{/jsp/samples/appmon}">Monitoring</a>
-                    </li>
-                </ul>
                 <div class="quick-search-box">
-                    <form class="d-flex input-group" role="search">
-                        <input class="form-control" type="search" placeholder="Search" aria-label="Search">
+                    <form class="d-flex input-group" role="search" name="google_quick_search">
+                        <input class="form-control" type="search" placeholder="Search" aria-label="Search" name="keyword">
                         <button class="btn" type="submit"><i class="bi bi-search"></i></button>
                     </form>
                 </div>
             </div>
-        </div>
-    </div>
-    <div class="breadcrumb-bar" style="display:none" data-hide-for="medium down">
-        <div class="container">
-            <nav aria-label="You are here:">
-                <ol class="breadcrumb" itemprop="breadcrumb">
-                </ol>
-            </nav>
         </div>
     </div>
 </nav>
@@ -118,15 +87,16 @@
     <div id="masthead"
          th:class="${!#strings.isEmpty(page.headimageinclude) ? 'masthead-with-image' : ''}">
         <div class="container" th:classappend="${pageStyle}">
-            <header th:if="${!#strings.isEmpty(page.headline)}">
-                <p th:if="${!#strings.isEmpty(page.subheadline)}" class="subheadline" itemprop="alternativeHeadline" th:text="${page.subheadline}">subheadline</p>
-                <h1 th:if="${!#strings.isEmpty(page.headline)}" itemprop="headline" th:text="${page.headline}">headline</h1>
-                <p th:if="${!#strings.isEmpty(page.teaser)}" class="teaser" itemprop="description" th:text="${page.teaser}">teaser</p>
+            <header>
+                <p class="subheadline" itemprop="alternativeHeadline">
+                    A full-stack sample web application built on top of Aspectran 8</p>
+                <h1 itemprop="headline">PetClinic Demo</h1>
+                <p class="teaser" itemprop="description">
+                    The goal of the PetClinic Demo App is to provide
+                    and demonstrate a sample web application that leverages Aspectran and JPA.
+                </p>
             </header>
-            <th:block th:unless="${#strings.isEmpty(insertFragmentInMasthead)}">
-                <th:block th:insert="~{${insertFragmentInMasthead}}"/>
-            </th:block>
-            <div class="hexagons" th:if="${!#strings.isEmpty(page.headline)}">
+            <div class="hexagons">
                 <div class="hexagon hex1"></div>
                 <div class="hexagon hex2"></div>
                 <div class="hexagon hex3"></div>
@@ -134,12 +104,13 @@
                 <div class="hexagon hex6"></div>
             </div>
         </div>
-        <th:block th:unless="${#strings.isEmpty(insertFragmentInMastheadWithImage)}">
-            <th:block th:insert="~{${page.insertFragmentInMastheadWithImage}}"/>
-        </th:block>
         <div class="container breadcrumb-bar">
             <nav role="navigation" aria-label="You are here:">
                 <ol class="breadcrumb" itemprop="breadcrumb">
+                    <li th:if="${#{currentEnvironment}.acceptsProfiles('prod')}" class="breadcrumb-item"><a href="https://public.aspectran.com/">Sample Apps</a></li>
+                    <li th:if="${#{currentEnvironment}.acceptsProfiles('!prod')}" class="breadcrumb-item"><a th:href="@{/../}">Sample Apps</a></li>
+                    <li th:if="${#{currentEnvironment}.acceptsProfiles('prod')}" class="breadcrumb-item active"><a href="https://petclinic.aspectran.com/">PetClinic Demo</a></li>
+                    <li th:if="${#{currentEnvironment}.acceptsProfiles('!prod')}" class="breadcrumb-item active"><a th:href="@{/}">PetClinic Demo</a></li>
                 </ol>
             </nav>
         </div>

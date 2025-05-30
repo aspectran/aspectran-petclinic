@@ -3,11 +3,11 @@
       th:replace="~{fragments/layout :: layout(~{::body}, 'home')}">
 <body>
 
-<h2 th:text="#{welcome}">Welcome</h2>
+<h2 th:text="' ' + #{welcome}" class="bi bi-chat-heart">Welcome</h2>
 
 <div class="row">
     <div class="col-md-auto">
-        <img class="img-responsive" src="images/pets.png" th:src="@{/images/pets.png}"/>
+        <img class="img-responsive" th:src="@{/images/pets.png}"/>
     </div>
     <div class="col-md-auto">
         <h3>Current Profiles</h3>
