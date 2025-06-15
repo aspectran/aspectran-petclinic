@@ -20,6 +20,8 @@ import com.aspectran.utils.Assert;
 import com.aspectran.utils.StringUtils;
 import com.aspectran.utils.annotation.jsr305.NonNull;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.LongSupplier;
 
 /**
@@ -33,16 +35,18 @@ public class PageInfo {
 
     private final int size;
 
-    private final int offset;
+    private final long offset;
 
     private long totalElements;
 
     private int totalPages;
 
+    private Map<String, Object> params;
+
     public PageInfo(int number, int size) {
         this.number = number;
         this.size = size;
-        this.offset = (number - 1) * size;
+        this.offset = (long)(number - 1) * size;
     }
 
     public int getNumber() {
@@ -53,7 +57,7 @@ public class PageInfo {
         return size;
     }
 
-    public int getOffset() {
+    public long getOffset() {
         return offset;
     }
 
@@ -97,6 +101,23 @@ public class PageInfo {
 
     public boolean hasPreviousPage() {
         return (number > 1);
+    }
+
+    public PageInfo withParam(String name, Object value) {
+        touchParams().put(name, value);
+        return this;
+    }
+
+    @NonNull
+    public Map<String, Object> getParams() {
+        return touchParams();
+    }
+
+    private Map<String, Object> touchParams() {
+        if (params == null) {
+            params = new HashMap<>();
+        }
+        return params;
     }
 
     @NonNull
