@@ -54,7 +54,6 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <aspectran.version>8.5.0</aspectran.version>
-<!--        <webjars-bootstrap.version>5.3.5</webjars-bootstrap.version>-->
     </properties>
 
     <repositories>
@@ -166,10 +165,13 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.14.0</version>
                 <configuration>
+                    <source>${maven.compiler.source}</source>
+                    <target>${maven.compiler.target}</target>
                     <compilerArgs>
                         <arg>-Xlint:-try,-path,-options</arg>
                     </compilerArgs>
                     <parameters>true</parameters>
+                    <proc>full</proc>
                     <showDeprecation>true</showDeprecation>
                     <showWarnings>true</showWarnings>
                     <excludes>
