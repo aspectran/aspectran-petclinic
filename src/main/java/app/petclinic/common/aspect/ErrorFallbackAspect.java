@@ -21,9 +21,7 @@ import com.aspectran.core.component.bean.annotation.Bean;
 import com.aspectran.core.component.bean.annotation.Component;
 import com.aspectran.core.component.bean.annotation.Dispatch;
 import com.aspectran.core.component.bean.annotation.ExceptionThrown;
-import com.aspectran.core.component.bean.annotation.Joinpoint;
 import com.aspectran.utils.annotation.jsr305.NonNull;
-import com.aspectran.web.support.http.HttpStatusSetter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
