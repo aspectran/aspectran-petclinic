@@ -8,7 +8,7 @@
     <meta name="google" content="notranslate">
     <title>PetClinic Demo</title>
     <meta name="description" content="PetClinic is a full-stack sample web application built on top Aspectran 8."/>
-    <link rel="stylesheet" type="text/css" href="https://assets.aspectran.com/bootstrap@5.3.7/css/aspectran.css"/>
+    <link rel="stylesheet" type="text/css" href="https://assets.aspectran.com/bootstrap@5.3.8/css/aspectran.css"/>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,700;1,400&display=swap">
     <script src="https://assets.aspectran.com/js/modernizr-custom.js"></script>
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
@@ -29,10 +29,10 @@
     <meta name="msapplication-TileImage" content="https://assets.aspectran.com/img/ms-icon-144x144.png"/>
     <meta name="msapplication-TileColor" content="#4B555A"/>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" integrity="sha256-pdY4ejLKO67E0CM2tbPtq1DJ3VGDVVdqAR6j3ZwdiE4=" crossorigin="anonymous">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
     <link th:href="@{/css/petclinic.css}" rel="stylesheet"/>
 </head>
-<body id="top-of-page" th:class="${pageStyle}" itemscope itemtype="https://schema.org/WebPage">
+<body id="top-of-page" class="plate console" itemscope itemtype="https://schema.org/WebPage">
 <nav id="navigation" class="navbar navbar-expand-lg" data-bs-theme="dark">
     <div class="title-bar">
         <div class="title-bar-left">
@@ -72,11 +72,13 @@
                     </li>
                 </ul>
             </div>
-            <div class="top-bar-right">
-                <div class="quick-search-box">
-                    <form class="d-flex input-group" role="search" name="google_quick_search">
-                        <input class="form-control" type="search" placeholder="Search" aria-label="Search" name="keyword">
-                        <button class="btn" type="submit"><i class="bi bi-search"></i></button>
+            <div class="top-bar-right d-lg-flex align-items-center gap-3">
+                <div class="quick-search-box m-2 mx-md-0 mb-md-2 m-lg-0">
+                    <form name="google_quick_search" role="search">
+                        <div class="input-group">
+                            <input class="form-control" type="text" name="keyword" placeholder="Search" aria-label="Search" aria-describedby="top-bar-quick-search-btn">
+                            <button class="btn btn-outline-primary text-white" type="button" id="top-bar-quick-search-btn"><i class="bi bi-search"></i></button>
+                        </div>
                     </form>
                 </div>
             </div>
@@ -115,7 +117,7 @@
             </nav>
         </div>
     </div>
-    <div class="container page-content">
+    <div class="container page-content petclinic">
         <th:block th:insert="${pageContent}"/>
     </div>
 </section>
@@ -131,13 +133,13 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-2 col-lg-1 mt-1">
-                    <h5><a class="logo" href="" title="Aspectran"><img src="https://assets.aspectran.com/img/aspectran-logo-grey-x100.png" width="100" height="100" alt="Aspectran" title="Aspectran"/></a></h5>
+                    <h5><a class="logo" href="https://aspectran.com/aspectran/" title="Aspectran"><img src="https://assets.aspectran.com/img/aspectran-logo-grey-x100.png" width="100" height="100" alt="Aspectran" title="Aspectran"/></a></h5>
                 </div>
-                <div class="col-md-4 col-lg-4">
-                    <a href=""><h5>About Aspectran</h5></a>
-                    <p><a href="">Aspectran is a lightweight, high‑performance framework for building both simple shell applications and large enterprise web services on the JVM.</a></p>
+                <div class="col-md-6 col-lg-4">
+                    <a href="https://aspectran.com/aspectran/"><h5>About Aspectran</h5></a>
+                    <p><a href="https://aspectran.com/aspectran/">Aspectran is a lightweight, high‑performance framework for building both simple shell applications and large enterprise web services on the JVM.</a></p>
                 </div>
-                <div class="col-sm-6 col-md-3 col-lg-3 offset-lg-1">
+                <div class="col-md-4 col-lg-3 offset-lg-1">
                     <h5>Get Involved</h5>
                     <ul class="list-unstyled">
                         <li class="bi bi-github"> <a href="https://github.com/aspectran" target="_blank" title="" class="external">GitHub</a></li>
