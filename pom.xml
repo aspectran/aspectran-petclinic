@@ -23,7 +23,7 @@
     <version>1.0.0-SNAPSHOT</version>
 
     <name>Petclinic Demo</name>
-    <description>Petclinic Demo is a sample web application built on top of Aspectran 8.</description>
+    <description>Petclinic Demo is a sample web application built on top of Aspectran 9.</description>
     <inceptionYear>2012</inceptionYear>
 
     <organization>
