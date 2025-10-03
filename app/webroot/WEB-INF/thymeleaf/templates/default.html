@@ -108,8 +108,7 @@
         <div class="container breadcrumb-bar">
             <nav role="navigation" aria-label="You are here:">
                 <ol class="breadcrumb" itemprop="breadcrumb">
-                    <li th:if="${#{currentEnvironment}.acceptsProfiles('prod')}" class="breadcrumb-item"><a href="https://public.aspectran.com/">Sample Apps</a></li>
-                    <li th:if="${#{currentEnvironment}.acceptsProfiles('!prod')}" class="breadcrumb-item"><a th:href="@{/../}">Sample Apps</a></li>
+                    <li class="breadcrumb-item"><a href="https://public.aspectran.com/">Sample Apps</a></li>
                     <li th:if="${#{currentEnvironment}.acceptsProfiles('prod')}" class="breadcrumb-item active"><a href="https://petclinic.aspectran.com/">PetClinic Demo</a></li>
                     <li th:if="${#{currentEnvironment}.acceptsProfiles('!prod')}" class="breadcrumb-item active"><a th:href="@{/}">PetClinic Demo</a></li>
                 </ol>
