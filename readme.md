@@ -18,7 +18,7 @@ This version of PetClinic is built on Aspectran and demonstrates the use of:
 ## Requirements
 
 - Java 21 or later
-- Maven 3.6.3 or later
+- Maven 3.9.4 or later
 
 ## Building from Source
 
