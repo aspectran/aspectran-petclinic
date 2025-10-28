@@ -2,7 +2,7 @@
 
 This is a port of the popular Spring PetClinic sample application, demonstrating how to build the same application using the Aspectran framework. It showcases how to leverage Aspectran's features to create a database-driven web application with a clean and modular architecture.
 
-<img width="1042" alt="petclinic-screenshot" src="https://cloud.githubusercontent.com/assets/838318/19727082/2aee6d6c-9b8e-11e6-81fe-e889a5ddfded.png">
+<img width="1042" alt="petclinic-screenshot" src="https://aspectran.com/images/projects/petclinic.png">
 
 ## About this Demo
 
