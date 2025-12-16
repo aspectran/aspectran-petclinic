@@ -15,15 +15,7 @@
  */
 package app.petclinic.owner;
 
-import java.time.LocalDate;
-import java.util.Collection;
-import java.util.LinkedHashSet;
-import java.util.Set;
-
-import com.aspectran.utils.annotation.jsr305.NonNull;
-import jakarta.persistence.Transient;
 import app.petclinic.model.NamedEntity;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -33,6 +25,13 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OrderBy;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
+import org.jspecify.annotations.NonNull;
+
+import java.time.LocalDate;
+import java.util.Collection;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 /**
  * Simple business object representing a pet.

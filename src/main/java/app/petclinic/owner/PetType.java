@@ -16,7 +16,6 @@
 package app.petclinic.owner;
 
 import app.petclinic.model.NamedEntity;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 

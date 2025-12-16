@@ -15,14 +15,13 @@
  */
 package app.petclinic.owner;
 
-import java.time.LocalDate;
-
 import app.petclinic.model.BaseEntity;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
+
+import java.time.LocalDate;
 
 /**
  * Simple JavaBean domain object representing a visit.

@@ -15,12 +15,12 @@
  */
 package app.petclinic.model;
 
-import java.io.Serializable;
-
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
+
+import java.io.Serializable;
 
 /**
  * Simple JavaBean domain object with an id property. Used as a base class for objects
