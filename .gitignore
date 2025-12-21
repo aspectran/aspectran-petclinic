@@ -11,3 +11,4 @@ app/jsvc_daemon.pid
 app/bin/jdk-*
 app/**/*.xml.apon
 /createDDL.jdbc
+.mvn/wrapper/maven-wrapper.jar
