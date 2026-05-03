@@ -112,7 +112,6 @@ daemon: {
     polling: {
         pollingInterval: 5000
         requeuable: true
-        incoming: /cmd/incoming
         enabled: true
     }
     commands: [
