@@ -17,6 +17,7 @@ package app.petclinic.common.db;
 
 import com.aspectran.core.component.bean.annotation.Bean;
 import com.aspectran.core.component.bean.annotation.Component;
+import com.aspectran.jpa.querydsl.DefaultEntityQuery;
 import com.aspectran.jpa.querydsl.EntityQuery;
 import com.querydsl.jpa.JPQLTemplates;
 
@@ -63,7 +64,7 @@ import com.querydsl.jpa.JPQLTemplates;
  */
 @Component
 @Bean(lazyDestroy = true)
-public class DefaultEntityQuery extends EntityQuery {
+public class PetclinicEntityQuery extends DefaultEntityQuery {
 
     /**
      * Constructs a new DefaultEntityQuery instance.
@@ -76,7 +77,7 @@ public class DefaultEntityQuery extends EntityQuery {
      * <p>The specified aspect ID must correspond to a registered
      * {@link com.aspectran.jpa.EntityManagerAdvice} aspect in the Aspectran context.
      */
-    public DefaultEntityQuery() {
+    public PetclinicEntityQuery() {
         super("jpaAspect");
         setTemplates(JPQLTemplates.DEFAULT);
     }
