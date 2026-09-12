@@ -1,11 +1,11 @@
 /*
- * Copyright (c) 2012-present the original author or authors.
+ * Copyright (c) 2018-present The Aspectran Project
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     https://www.apache.org/licenses/LICENSE-2.0
+ *     http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -20,22 +20,19 @@ import com.aspectran.core.component.bean.ablility.InitializableFactoryBean;
 import com.aspectran.core.component.bean.annotation.Autowired;
 import com.aspectran.core.component.bean.annotation.Bean;
 import com.aspectran.core.component.bean.annotation.Component;
-import com.aspectran.core.component.bean.aware.ActivityContextAware;
-import com.aspectran.core.context.ActivityContext;
 import com.aspectran.core.support.i18n.message.MessageSource;
+import com.aspectran.core.support.i18n.message.MessageSourceResourceBundle;
 import jakarta.validation.MessageInterpolator;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
-import jakarta.validation.ValidatorContext;
 import jakarta.validation.ValidatorFactory;
+import org.hibernate.validator.messageinterpolation.ResourceBundleMessageInterpolator;
 
 @Component
 @Bean
-public class ValidatorFactoryBean implements ActivityContextAware, InitializableFactoryBean<Validator>, DisposableBean {
+public class ValidatorFactoryBean implements InitializableFactoryBean<Validator>, DisposableBean {
 
     private final MessageSource messageSource;
-
-    private ActivityContext context;
 
     private ValidatorFactory validatorFactory;
 
@@ -47,25 +44,17 @@ public class ValidatorFactoryBean implements ActivityContextAware, Initializable
     }
 
     @Override
-    public void setActivityContext(ActivityContext context) {
-        this.context = context;
-    }
-
-    @Override
     public void initialize() {
         if (validator == null) {
-            if (validatorFactory == null) {
-                validatorFactory = Validation.buildDefaultValidatorFactory();
-            }
+            MessageInterpolator messageInterpolator = null;
             if (messageSource != null) {
-                ValidatorContext validatorContext = validatorFactory.usingContext();
-                MessageInterpolator targetInterpolator = validatorFactory.getMessageInterpolator();
-
-                LocaleContextMessageInterpolator messageInterpolator = new LocaleContextMessageInterpolator(targetInterpolator);
-                messageInterpolator.setActivityContext(context);
-
-                validatorContext.messageInterpolator(messageInterpolator);
+                messageInterpolator = new ResourceBundleMessageInterpolator(locale ->
+                        new MessageSourceResourceBundle(messageSource, locale));
             }
+            validatorFactory = Validation.byDefaultProvider()
+                    .configure()
+                    .messageInterpolator(messageInterpolator)
+                    .buildValidatorFactory();
             validator = validatorFactory.getValidator();
         }
     }
