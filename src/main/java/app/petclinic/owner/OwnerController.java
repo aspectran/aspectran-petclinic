@@ -62,14 +62,20 @@ public class OwnerController {
     @Dispatch("owners/ownersList")
 	public void processFindForm(@NonNull Translet translet, String lastName) {
 		// find owners by last name
-        PageInfo pageInfo = PageInfo.of(translet, 5);
+        PageInfo pageInfo = PageInfo.of(translet);
         List<Owner> listOwners = ownerDao.findByLastName(StringUtils.nullToEmpty(lastName), pageInfo);
+        if (listOwners.isEmpty() && pageInfo.getNumber() > 1) {
+            pageInfo = PageInfo.of(pageInfo.getNumber() - 1, pageInfo.getSize());
+            listOwners = ownerDao.findByLastName(StringUtils.nullToEmpty(lastName), pageInfo);
+        }
 		if (listOwners.isEmpty()) {
 			// no owners found
+            Owner owner = new Owner();
+            owner.setLastName(lastName);
             ValidationResult result = new ValidationResult();
             result.putError("lastName", translet.getMessage("notFound", "Not found"));
             translet.setAttribute("errors", result.getErrors());
-            translet.setAttribute("owner", new Owner());
+            translet.setAttribute("owner", owner);
             translet.dispatch("owners/findOwners");
 			return;
 		}
@@ -137,6 +143,17 @@ public class OwnerController {
         translet.redirect("/owners/" + ownerId,
                 (page != null ? Map.of("page", Integer.toString(page)) : null));
 	}
+
+    @RequestToPost("/owners/${ownerId}/delete")
+    public void deleteOwner(@NonNull Translet translet, @NonNull Integer ownerId, Integer page) {
+        Owner owner = ownerDao.findById(ownerId);
+        if (owner != null) {
+            ownerDao.delete(owner);
+            translet.getOutputFlashMap().put("message", "Owner Deleted");
+        }
+        translet.redirect("/owners",
+                (page != null ? Map.of("page", Integer.toString(page)) : null));
+    }
 
 	/**
 	 * Custom handler for displaying an owner.

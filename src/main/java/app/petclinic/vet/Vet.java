@@ -15,6 +15,7 @@
  */
 package app.petclinic.vet;
 
+import app.petclinic.model.NamedEntity;
 import app.petclinic.model.Person;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -23,9 +24,11 @@ import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.xml.bind.annotation.XmlElement;
+import org.jspecify.annotations.NonNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -39,6 +42,7 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "vets")
+@SuppressWarnings("serial")
 public class Vet extends Person {
 
     @ManyToMany(fetch = FetchType.EAGER)
@@ -60,7 +64,8 @@ public class Vet extends Person {
     @XmlElement
     public List<Specialty> getSpecialties() {
         List<Specialty> sortedSpecs = new ArrayList<>(getSpecialtiesInternal());
-        //PropertyComparator.sort(sortedSpecs, new MutableSortDefinition("name", true, true));
+        sortedSpecs.sort(Comparator.comparing(NamedEntity::getName,
+                Comparator.nullsLast(String.CASE_INSENSITIVE_ORDER)));
         return Collections.unmodifiableList(sortedSpecs);
     }
 
@@ -70,6 +75,28 @@ public class Vet extends Person {
 
     public void addSpecialty(Specialty specialty) {
         getSpecialtiesInternal().add(specialty);
+    }
+
+    public void clearSpecialties() {
+        getSpecialtiesInternal().clear();
+    }
+
+    public boolean hasSpecialty(Integer specialtyId) {
+        if (specialtyId == null) {
+            return false;
+        }
+        for (Specialty specialty : getSpecialtiesInternal()) {
+            if (specialtyId.equals(specialty.getId())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void updateVet(@NonNull Vet vet) {
+        this.setFirstName(vet.getFirstName());
+        this.setLastName(vet.getLastName());
+        this.setSpecialtiesInternal(new HashSet<>(vet.getSpecialtiesInternal()));
     }
 
 }

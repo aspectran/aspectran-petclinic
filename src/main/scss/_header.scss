@@ -1,13 +1,10 @@
 .petclinic {
   .navbar {
-    border-top: 4px solid #6db33f;
-    background-color: #34302d;
+    background-color: #353b3e;
     margin-bottom: 0;
     padding-top: 0;
     padding-bottom: 0;
-    border-bottom: 0;
-    border-left: 0;
-    border-right: 0;
+    border: 0;
   }
 
   .navbar a.navbar-brand {
@@ -24,57 +21,45 @@
     height: 46px;
     background: url("../images/spring-logo-dataflow.png") -1px -48px no-repeat;
     opacity: 0;
-    -moz-transition: opacity 0.12s ease-in-out;
-    -webkit-transition: opacity 0.12s ease-in-out;
-    -o-transition: opacity 0.12s ease-in-out;
+    transition: opacity 0.12s ease-in-out;
   }
 
   .navbar a:hover.navbar-brand span {
     opacity: 1;
   }
 
-  .navbar li > a {
-    font-family: "montserratregular", sans-serif;
-    text-shadow: none;
-    font-size: 16px;
-    padding: 28px 20px;
-    transition: all 0.15s;
-    -webkit-transition: all 0.15s;
-    -moz-transition: all 0.15s;
-    -o-transition: all 0.15s;
-    -ms-transition: all 0.15s;
+  .navbar .navbar-nav > li > a {
+    font-size: 0.95rem;
+    font-weight: 600;
+    padding: 1.25rem 1.15rem;
+    transition: background-color 0.15s ease-in-out, color 0.15s ease-in-out;
+    text-transform: uppercase;
   }
 
-  .navbar .navbar-collapse.show .navbar-nav {
-    padding-top: 20px;
-    padding-bottom: 10px;
+  .navbar .navbar-nav > li > a.active {
+    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.12);
+    box-shadow: inset 0 -3px 0 #21738c;
+  }
+
+  .navbar .navbar-nav > li:hover > a {
+    color: #ffffff;
+    background-color: #21738c;
+  }
+
+  .navbar .navbar-collapse.show .navbar-nav,
+  .navbar .navbar-collapse.collapsing .navbar-nav {
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
   }
 
   .navbar .navbar-collapse.show .nav-link,
   .navbar .navbar-collapse.collapsing .nav-link {
-    padding: 10px 0 10px 20px;
-  }
-
-  .navbar li > a {
-    text-transform: uppercase;
-  }
-
-  .navbar li:hover > a {
-    color: #eeeeee;
-    background-color: #6db33f;
+    padding: 0.65rem 1rem;
   }
 
   .navbar-toggler {
     border: 0;
-
-    .icon-bar + .icon-bar {
-      margin-top: 3px;
-    }
-
-    .icon-bar {
-      width: 19px;
-      height: 3px;
-    }
 
     &:focus {
       box-shadow: none;

@@ -4,14 +4,30 @@
       th:fragment="template(pageStyle, contentStyle, pageContent, currentMenu, insertFragmentInMasthead, insertFragmentInMastheadWithImage)">
 <head>
     <meta charset="utf-8">
+    <script>
+        (() => {
+            const getStoredTheme = () => localStorage.getItem('theme');
+            const getPreferredTheme = () => {
+                const storedTheme = getStoredTheme();
+                if (storedTheme) {
+                    return storedTheme;
+                }
+                return 'auto';
+            };
+            const setTheme = theme => {
+                const newTheme = theme === 'auto'
+                    ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+                    : theme;
+                document.documentElement.setAttribute('data-bs-theme', newTheme);
+            };
+            setTheme(getPreferredTheme());
+        })();
+    </script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="google" content="notranslate">
     <title>PetClinic Demo</title>
     <meta name="description" content="PetClinic is a full-stack sample web application built on top Aspectran 9."/>
-    <link rel="stylesheet" type="text/css" href="https://assets.aspectran.com/bootstrap@5.3.8/css/aspectran.css"/>
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,700;1,400&display=swap">
-    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
-    <link rel="mask-icon" href="https://cdn.jsdelivr.net/gh/aspectran/aspectran-assets@main/assets/img/aspectran-logo.svg" color="#4B555A"/>
+    <link rel="mask-icon" href="https://assets.aspectran.com/img/aspectran-logo.svg" color="#4B555A"/>
     <link rel="apple-touch-icon" sizes="57x57" href="https://assets.aspectran.com/img/apple-icon-57x57.png"/>
     <link rel="apple-touch-icon" sizes="60x60" href="https://assets.aspectran.com/img/apple-icon-60x60.png"/>
     <link rel="apple-touch-icon" sizes="72x72" href="https://assets.aspectran.com/img/apple-icon-72x72.png"/>
@@ -27,11 +43,16 @@
     <link rel="icon" type="image/png" sizes="96x96" href="https://assets.aspectran.com/img/favicon-96x96.png"/>
     <meta name="msapplication-TileImage" content="https://assets.aspectran.com/img/ms-icon-144x144.png"/>
     <meta name="msapplication-TileColor" content="#4B555A"/>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" integrity="sha256-pdY4ejLKO67E0CM2tbPtq1DJ3VGDVVdqAR6j3ZwdiE4=" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="https://assets.aspectran.com/bootstrap@5.3.8/css/aspectran.css"/>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,400;0,700;1,400&display=swap">
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.2/font/bootstrap-icons.min.css" integrity="sha256-ecmcGh4Ok3+AilgWVyi37QCADwLvXvz80Q3+cUZOZ10=" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
-    <link th:href="@{/css/petclinic.css}" rel="stylesheet"/>
+    <link th:href="@{/css/petclinic.css?v=20261031}" rel="stylesheet"/>
+    <script src="https://assets.aspectran.com/js/navigation.js?v=20250923"></script>
+    <script src="https://assets.aspectran.com/js/theme-toggler.js?v=20251005"></script>
 </head>
-<body id="top-of-page" class="plate solid" itemscope itemtype="https://schema.org/WebPage">
+<body id="top-of-page" th:class="${pageStyle}" itemscope itemtype="https://schema.org/WebPage">
 <nav id="navigation" class="navbar navbar-expand-lg" data-bs-theme="dark">
     <div class="title-bar">
         <div class="title-bar-left">
@@ -78,6 +99,36 @@
                         </div>
                     </form>
                 </div>
+                <div class="settings d-flex justify-content-end align-items-center gap-2 mx-3 my-2 m-lg-0">
+                    <div class="theme-toggler dropdown">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="theme-toggler-btn" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Toggle theme">
+                            <i class="bi theme-icon-active"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="theme-toggler-btn">
+                            <li>
+                                <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="light">
+                                    <i class="bi bi-sun-fill me-2 opacity-50"></i>
+                                    Light
+                                    <i class="bi bi-check2 ms-auto d-none"></i>
+                                </button>
+                            </li>
+                            <li>
+                                <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="dark">
+                                    <i class="bi bi-moon-stars-fill me-2 opacity-50"></i>
+                                    Dark
+                                    <i class="bi bi-check2 ms-auto d-none"></i>
+                                </button>
+                            </li>
+                            <li>
+                                <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="auto">
+                                    <i class="bi bi-circle-half me-2 opacity-50"></i>
+                                    Auto
+                                    <i class="bi bi-check2 ms-auto d-none"></i>
+                                </button>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -99,6 +150,7 @@
                 <div class="hexagon hex1"></div>
                 <div class="hexagon hex2"></div>
                 <div class="hexagon hex3"></div>
+                <div class="hexagon hex4"></div>
                 <div class="hexagon hex5"></div>
                 <div class="hexagon hex6"></div>
             </div>
@@ -159,158 +211,10 @@
 </footer>
 <script>
     $(function () {
-        let $win = $(window);
-        let $nav = $("#navigation");
-        let navHeight = Math.abs($("#masthead").height() - $nav.height());
-        let lastScrollTop = 0;
-        let scrolled;
-        let navFixed;
-        $win.scroll(function () {
-            scrolled = true;
-        });
-        setInterval(function () {
-            if (scrolled) {
-                let scrollTop = $win.scrollTop();
-                if (Math.abs(lastScrollTop - scrollTop) <= 10) {
-                    return;
-                }
-                if (scrollTop <= navHeight) {
-                    if (navFixed) {
-                        $nav.removeClass("fixed");
-                        navFixed = false;
-                    }
-                } else if (scrollTop > lastScrollTop) {
-                    if (navFixed) {
-                        $nav.removeClass("fixed");
-                        navFixed = false;
-                    }
-                } else {
-                    if (!navFixed) {
-                        if ($nav.hasClass("immediate")) {
-                            $nav.removeClass("immediate")
-                        } else {
-                            $nav.addClass("fixed");
-                            $nav.hide().fadeIn(500);
-                            navFixed = true;
-                        }
-                    }
-                }
-                lastScrollTop = scrollTop;
-                scrolled = false;
-            }
-        }, 200);
         /* google search */
         $("form[name=google_quick_search]").submit(function (event) {
             window.open("https://www.google.com/search?q=" + this.keyword.value + "+site:https%3A%2F%2Faspectran.com");
             event.preventDefault();
-        });
-    });
-</script>
-<script>
-    $(function () {
-        $("#masthead h1, article h1, article h2, article h3").each(function (index, item) {
-            let tagn = item.localName;
-            let anchor = "top-of-page";
-            if (tagn !== "h1") {
-                anchor = "anchor-" + (index + 1);
-                $(this).before("<a class='toc-anchor " + anchor + "' id='" + anchor + "' name='" + anchor + "'></a>");
-            }
-            $("<li class='toc-" + tagn + "'></li>")
-                .append($("<a anchor='" + anchor + "' href='#" + anchor + "'/>").text($(item).text()))
-                .appendTo("#toc ul");
-        });
-    });
-</script>
-<script>
-    $(function () {
-        $(".lazy-sticky").each(function () {
-            const $win = $(window);
-            const $this = $(this);
-            const baseOffsetTop = $this.offset().top;
-            const upToTopHeight = $("#up-to-top").height() + 30 + 60;
-            let footerHeight = $("#footer-content").height() + upToTopHeight;
-            let offsetTop = 0;
-            let thisHeight = $this.height();
-            let winHeight = $win.height();
-            let scrollTimer = null;
-            let immediate = false;
-            $this.find("#toc ul a").click(function () {
-                immediate = true;
-                let anchor = $(this).attr("anchor");
-                if (anchor !== "top-of-page") {
-                    $("#navigation").addClass("immediate");
-                }
-            });
-            $win.scroll(function () {
-                let scrollTop = $win.scrollTop();
-                if (scrollTop < baseOffsetTop) {
-                    if (scrollTimer) {
-                        clearInterval(scrollTimer);
-                        scrollTimer = null;
-                    }
-                    scrollTimer = setInterval(function () {
-                        if (offsetTop !== 0) {
-                            $this.css({
-                                top: 0
-                            });
-                        }
-                        offsetTop = 0;
-                        clearInterval(scrollTimer);
-                        scrollTimer = null;
-                        immediate = false;
-                    }, immediate ? 250 : 500);
-                } else {
-                    let topBarHeight = $("#navigation.fixed .top-bar").height()||0;
-                    if (immediate || (scrollTop > baseOffsetTop + topBarHeight + offsetTop + thisHeight - 20) ||
-                        (scrollTop < baseOffsetTop + topBarHeight + offsetTop)) {
-                        if ($this.offset().left >= 15 && $this.width() < 500) {
-                            if (scrollTimer) {
-                                clearInterval(scrollTimer);
-                                scrollTimer = null;
-                            }
-                            scrollTimer = setInterval(function () {
-                                topBarHeight = $("#navigation.fixed .top-bar").height()||0;
-                                scrollTop = $win.scrollTop();
-                                if (scrollTop < baseOffsetTop + topBarHeight) {
-                                    scrollTop = 0;
-                                } else {
-                                    scrollTop = scrollTop - baseOffsetTop + topBarHeight + 30;
-                                }
-                                if (scrollTop > $(document).height() - footerHeight - thisHeight - baseOffsetTop + topBarHeight) {
-                                    scrollTop = $(document).height() - footerHeight - thisHeight - baseOffsetTop + topBarHeight;
-                                }
-                                offsetTop = scrollTop;
-                                $this.css({
-                                    position: "relative"
-                                });
-                                $this.animate({
-                                    top: scrollTop + "px"
-                                }, 300);
-                                clearInterval(scrollTimer);
-                                scrollTimer = null;
-                                winHeight = $win.height();
-                                thisHeight = $this.height();
-                                footerHeight = $("#footer-content").height() + upToTopHeight;
-                                immediate = false;
-                            }, immediate ? 250 : 500);
-                        }
-                    }
-                }
-            });
-            $win.resize(function () {
-                if ($this.offset().left < 15 || $this.width() >= 500) {
-                    clearInterval(scrollTimer);
-                    $this.css("top", 0);
-                } else {
-                    $win.scroll();
-                }
-            });
-            setTimeout(function () {
-                if ($win.scrollTop() > baseOffsetTop) {
-                    offsetTop = $win.scrollTop();
-                    $win.scroll();
-                }
-            }, 150);
         });
     });
 </script>
